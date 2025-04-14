@@ -81,12 +81,16 @@
         color: #555;
       }
       .accordion-header .arrow {
+        width: 24px;
+        height: 24px;
         position: absolute;
         right: 0;
         top: 50%;
-        transform: translateY(-50%);
-        transition: transform 0.3s, color 0.3s;
+        transform: translateY(-50%) rotate(0deg);
+        transition: transform 0.3s ease, fill 0.3s ease;
+        fill: currentColor;
       }
+
       .accordion-content {
         display: none;
         padding: 10px;
@@ -159,7 +163,7 @@
       <div class="accordion-header" onclick="toggleAccordion(this)">
         <span class="title">jumpseat</span>
         <span class="subtitle">Web-based AI text completion</span>
-        <span class="arrow">▶</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         After trying AI code editors like Github Copilot, I spent a a weekend
@@ -175,8 +179,8 @@
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
         <span class="title">jvim</span>
-        <span class="subtitle">Lightweight memory-safe Vim clone</span>
-        <span class="arrow">▶</span>
+        <span class="subtitle">Memory-safe Vim clone</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         Inspired by
@@ -189,10 +193,8 @@
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
         <span class="title">jpaint</span>
-        <span class="subtitle"
-          >SDL Graphics paint pad with fill and stroke-erase</span
-        >
-        <span class="arrow">▶</span>
+        <span class="subtitle">OpenGL paint pad for Mac</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         MacOS doesn't have a default paint app, so I made one in C. It's got
@@ -204,7 +206,7 @@
       <div class="accordion-header" onclick="toggleAccordion(this)">
         <span class="title">canvas games</span>
         <span class="subtitle">Minigames in pure JS</span>
-        <span class="arrow">▶</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         When lecture gets a little boring, I like to make games using only HTML
@@ -217,14 +219,13 @@
       </div>
     </div>
     <h2>data structures</h2>
-    I like reading about theoretical approaches to big data problems and testing
-    their real-world performance. Particularly, I'm interested in
-    memory-efficient data structures, streaming algorithms, and hashing.
+    I like testing about theoretical algorithms on big datasets. Particularly,
+    I'm interested in sublinear sketches, streaming algorithms, and hashing.
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Space-Efficient Probabilistic Sketches</span>
+        <span class="title">Probabilistic Sketches</span>
         <span class="subtitle">Bloom Filter, HyperLogLog, CountMin</span>
-        <span class="arrow">▶</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         Solving problems like keeping a counter or marking distinct elements is
@@ -243,11 +244,9 @@
     </div>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Augmented and Specialized Trees</span>
-        <span class="subtitle"
-          >Binomial Heap, van Emde Boas, Interval Tree</span
-        >
-        <span class="arrow">▶</span>
+        <span class="title">Augmented Trees</span>
+        <span class="subtitle">BinHeap, vEB Tree, Interval Tree</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         Binary search trees are a great general-purpose data structure that
@@ -264,9 +263,9 @@
     <h2>writing</h2>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Efficiently Sampling Spanning Trees</span>
+        <span class="title">Sampling Spanning Trees</span>
         <span class="subtitle"></span>
-        <span class="arrow">▶</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
         I explore how to generate truly random spanning trees from graphs. Check
