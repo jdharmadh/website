@@ -198,55 +198,17 @@
     </div>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">canvas</span>
-        <span class="subtitle">Minigames in pure JS</span>
+        <span class="title">data structures</span>
+        <span class="subtitle">Trees and Sketches</span>
         <img src="arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
-        When lecture gets boring, I like to make games with HTML Canvas and
-        JavaScript. There's Pong, Tetris, Conway's Game of Life, and Chrome
-        Dino. There's also a mode that trains a neural network to learn Dino
-        while you play it. Try them
-        <a href="https://jaydharmadhikari.com/js-canvas-fun" target="_blank"
-          >here</a
-        >.
-      </div>
-    </div>
-    <h2>data structures</h2>
-    I like testing theoretical algorithms on big datasets. Particularly, I'm
-    interested in sublinear algorithms, streaming algorithms, and sketching.
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Probabilistic Sketches</span>
-        <span class="subtitle">Filters, HyperLogLog, CountMin</span>
-        <img src="arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Solving problems like keeping a counter or marking distinct elements is
-        straightforward, unless you're Google or Meta and the number of data
-        points you have is in the billions. How do you run algorithms designed
-        for arrays when all of your input doesn't even fit in memory? I provide
-        toy solutions that solve these problems by sketching, i.e. sacrificing a
-        small amount of accuracy for tons of efficiency. Take a look
-        <a
-          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/sketch"
+        I wrote some toy implementations of various tree-based data structures. They are efficient for a range of problems related to storing and searching data, and you can see them        <a
+          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/tree"
           target="_blank"
           >here</a
-        >.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Augmented Trees</span>
-        <span class="subtitle">BinHeap, vEB Tree, Interval Tree</span>
-        <img src="arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Binary search trees are a data structure for dictionary problems.
-        However, if we make some small modifications to how they store data, we
-        can solve a much wider range of problems efficiently. Take a look
-        <a
-          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/tree"
+        >.  I also implemented a couple of data sketches for streaming algorithms, which you can see <a
+          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/sketch"
           target="_blank"
           >here</a
         >.
@@ -264,6 +226,17 @@
         distribution of all spanning trees on G? The answer ties together random
         walks, Markov chains, and linear algebra. Read
         <a href="./spanning_trees.pdf" target="_blank">here</a>.
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <span class="title">KLL Sketch</span>
+        <span class="subtitle">December 2024</span>
+        <img src="arrow.svg" alt="Arrow" class="arrow" />
+      </div>
+      <div class="accordion-content">
+        A presentation I gave about "Optimal Quantile Approximation in Streams" by Karnin, Lang, and Liberty. Read
+        <a href="./kll.pdf" target="_blank">here</a>.
       </div>
     </div>
     <blockquote>
