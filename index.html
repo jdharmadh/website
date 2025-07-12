@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jay Dharmadhikari</title>
     <link rel="icon" type="image/x-icon" href="./assets/favicon.ico" />
-    <link rel="stylesheet" href="https://latex.vercel.app/style.css" />
+    <link rel="stylesheet" href="https://latex.vercel.app/style.css" /> 
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+      html,
+      body {
+        font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial,
+          "Liberation Sans", sans-serif;
+      }
       p {
         hyphens: none;
       }
@@ -22,7 +29,6 @@
       }
       .icons {
         display: flex;
-        justify-content: center;
         margin: 15px 0;
       }
       .icons a {
@@ -127,7 +133,7 @@
     </script>
   </head>
   <body>
-    <h1>hi, i'm jay.</h1>
+    <h1 style="text-align: left">Jay Dharmadhikari</h1>
     <div class="icons">
       <a href="https://github.com/jdharmadh" target="_blank"
         ><img src="./assets/github.png" alt="GitHub"
@@ -153,7 +159,7 @@
       <br />
       <strong>
         My career goal is to build systems that are fast, consumer-facing, and
-        algorithmic in nature.
+        algorithmic.
       </strong>
     </p>
 
@@ -239,7 +245,7 @@
       </div>
     </div>
 
-    <h2>writing</h2>
+    <h2>notes</h2>
     <div class="accordion">
       <div class="accordion-header" onclick="toggleAccordion(this)">
         <span class="title">Signed Graphs</span>
@@ -247,9 +253,9 @@
         <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
       </div>
       <div class="accordion-content">
-        Signed graphs are a way to represent relationships between
-        entities, where edges can be positive or negative. I survey some theorems
-        about their structure and properties, which you can read
+        Signed graphs are a way to represent relationships between entities,
+        where edges can be positive or negative. I survey some theorems about
+        their structure and properties, which you can read
         <a href="./pdf/signed_graphs.pdf" target="_blank">here</a>.
       </div>
     </div>
@@ -291,15 +297,94 @@
         <a href="./pdf/kll.pdf" target="_blank">here</a>.
       </div>
     </div>
-    <blockquote>
-      The computer is useless. It can only answer questions. &mdash;
-      <em>Pablo Picasso</em>
-    </blockquote>
+    <!-- TODO -->
+    <!-- <h2>favorites</h2>
+    <p style="font-size: 18px; margin-top: 0">
+      Music:
+      <em>
+        <a
+          href="https://en.wikipedia.org/wiki/Fr%C3%A9d%C3%A9ric_Chopin"
+          target="_blank"
+          >Chopin</a
+        >,
+        <a href="https://en.wikipedia.org/wiki/Claude_Debussy" target="_blank"
+          >Debussy</a
+        >,
+        <a href="https://www.radiohead.com/" target="_blank">Radiohead</a>
+      </em>
+    </p>
+    <hr
+      style="
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 4px auto;
+        width: 100%;
+      "
+    />
+    <p style="font-size: 18px; margin-top: 0">
+      Books:
+      <em
+        >1984, The Hitchhiker's Guide to the Galaxy, The Brothers Karamazov</em
+      >
+    </p>
+    <hr
+      style="
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 4px auto;
+        width: 100%;
+      "
+    />
+
+    <h2>quote machine</h2>
+    <div id="quote-container">
+      <blockquote id="quote">
+        The computer is useless. It can only answer questions. &mdash;
+        <em>Pablo Picasso</em>
+      </blockquote>
+      <button
+        onclick="changeQuote()"
+        style="
+          background-color: darkred;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 5px;
+          cursor: pointer;
+        "
+      >
+        New Quote
+      </button>
+    </div>
+
+    <script>
+      const quotes = [
+        "The computer is useless. It can only answer questions. &mdash; <em>Pablo Picasso</em>",
+        "Programs must be written for people to read, and only incidentally for machines to execute. &mdash; <em>Harold Abelson</em>",
+        "Any sufficiently advanced technology is indistinguishable from magic. &mdash; <em>Arthur C. Clarke</em>",
+        "First, solve the problem. Then, write the code. &mdash; <em>John Johnson</em>",
+        "Code is like humor. When you have to explain it, it’s bad. &mdash; <em>Cory House</em>",
+      ];
+
+      let lastIndex = -1;
+
+      function changeQuote() {
+        const quoteElement = document.getElementById("quote");
+        let randomIndex;
+
+        do {
+          randomIndex = Math.floor(Math.random() * quotes.length);
+        } while (randomIndex === lastIndex);
+
+        lastIndex = randomIndex;
+        quoteElement.innerHTML = quotes[randomIndex];
+      }
+    </script>
 
     <script>
       function toggleAccordion(element) {
         element.parentElement.classList.toggle("open");
       }
-    </script>
+    </script> -->
   </body>
 </html>
