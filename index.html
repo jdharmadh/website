@@ -133,7 +133,14 @@
     </script>
   </head>
   <body>
-    <h1 style="text-align: left">Jay Dharmadhikari</h1>
+    <h1 style="text-align: left; font-size: 2em;">Jay Dharmadhikari</h1>
+    <style>
+      @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5em;
+      }
+      }
+    </style>
     <div class="icons">
       <a href="https://github.com/jdharmadh" target="_blank"
         ><img src="./assets/github.png" alt="GitHub"
@@ -379,12 +386,12 @@
         lastIndex = randomIndex;
         quoteElement.innerHTML = quotes[randomIndex];
       }
-    </script>
+    </script> -->
 
     <script>
       function toggleAccordion(element) {
         element.parentElement.classList.toggle("open");
       }
-    </script> -->
+    </script>
   </body>
 </html>
