@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Structure Theorems for Signed Graphs</title>
+    <style>
+      /* Article-style layout with padding on both sides */
+      :root {
+        --maxw: 1024px;
+        --pad: 40px;
+        --lead: 1.45;
+        --serif: Georgia, "Times New Roman", Times, serif;
+        --mono: "Courier New", Courier, monospace;
+        --sans: monospace;
+      }
+      html,
+      body {
+        height: 100%;
+        color: #111;
+        font-family: var(--sans);
+        line-height: var(--lead);
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: var(--maxw);
+        margin: 36px auto;
+        padding: var(--pad);
+        background: #fff;
+        border-radius: 8px;
+      }
+      header h1 {
+        margin: 0 0 6px 0;
+        font-size: 32px;
+        letter-spacing: -0.3px;
+      }
+      header p.byline {
+        margin: 0 0 22px 0;
+        color: #555;
+        font-family: var(--sans);
+      }
+      h2 {
+        margin-top: 28px;
+        font-size: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 6px;
+      }
+      h3 {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+      p {
+        margin: 10px 0;
+        font-size: 16px;
+      }
+      a {
+        color: #8b0000;
+        text-decoration: none;
+      }
+      pre.math {
+        margin: 14px 0;
+        padding: 12px 16px;
+        background: #f7f7f7;
+        border-left: 4px solid #e0e0e0;
+        overflow: auto;
+        font-family: var(--mono);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .display {
+        margin: 14px 0;
+      }
+      code.inline {
+        background: #f2f2f2;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: var(--mono);
+      }
+      ul {
+        margin: 8px 0 8px 22px;
+      }
+      .pdfmessage {
+        margin-top: 28px;
+        color: #666;
+      }
+      /* small rules to keep LaTeX-looking content aligned */
+      .equation {
+        margin: 12px 0;
+      }
+    </style>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Structure Theorems for Signed Graphs</h1>
+        <p class="byline">June 2025</p>
+      </header>
+
+      <article>
+        <h2 id="introduction">Introduction</h2>
+
+        <p>
+          The signed graph is an object that combines graph theory and social
+          science to arrive at interesting con- clusions. We assign each of a
+          simple unweighted undirected graph with either a + or − sign, and we
+          are able to derive structural theorems based on these signs. From
+          <a href="#ref-CH56">[CH56]</a> we find that this simple addition can
+          model social situations of friendship and enmity. Imagine each vertex
+          as a person, a + edge as a positive relationship and a − edge as a
+          negative relationship. A signed graph is balanced if the product of
+          edge signs along every cycle is positive, a notion that extends to
+          balance in social situations.
+        </p>
+        <div style="margin: auto; text-align: center">
+          <div
+            id="triangles-container"
+            style="width: 100%; height: 250px; background: white"
+          ></div>
+        </div>
+
+        <p>
+          In the following theorems, we observe the behavior of a signed graph
+          as a complete social system.
+        </p>
+
+        <h2 id="harary">Harary’s Theorems</h2>
+
+        <p>
+          A signed graph <span class="inline-math">\((G, \sigma)\)</span> is a
+          graph <span class="inline-math">\(G = (V,E)\)</span> with an
+          assignment of signs
+          <span class="inline-math">\(\sigma : E \to \{-1,+1\}\)</span>. We call
+          an edge positive or negative if its sign is +1 or −1 respectively. The
+          sign of a path is the product of the path's edges. By Harary
+          <a href="#ref-Har53">[Har53]</a>
+          we get the following theorems.
+        </p>
+
+        <p>
+          <strong>Definition.</strong> A signed graph is balanced if every cycle
+          in the graph has a positive sign.
+        </p>
+
+        <p>
+          <strong>Theorem 1.</strong> For every complete signed graph
+          <span class="inline-math">\(G = (K_n, \sigma)\)</span>,
+          <span class="inline-math">\(G\)</span> is balanced if and only if
+          there is a cut <span class="inline-math">\(S, T\)</span> such that all
+          internal edges
+          <span class="inline-math"
+            >\(S \leftrightarrow S, T \leftrightarrow T\)</span
+          >
+          are positive and all cross edges
+          <span class="inline-math">\(S \leftrightarrow T\)</span> edges are
+          negative.
+        </p>
+
+        <p>
+          A social interpretation of this theorem is that a balanced social
+          system consists of two tightly knit cliques who oppose each other.
+        </p>
+
+        <h3>Proof.</h3>
+
+        <p>
+          <strong>→ Direction:</strong> Suppose
+          <span class="inline-math">\(G\)</span> is balanced. Let
+          <span class="inline-math">\(v\)</span> be an arbitrary vertex in
+          <span class="inline-math">\(G\)</span>. Let
+          <span class="inline-math">\(X \subseteq V\)</span> be the set of
+          vertices connected to <span class="inline-math">\(v\)</span> by a
+          positive edge and <span class="inline-math">\(v\)</span> itself, and
+          let <span class="inline-math">\(Y\)</span> be the set of all other
+          vertices (i.e., vertices connected to
+          <span class="inline-math">\(v\)</span> by a negative edge since
+          <span class="inline-math">\(G\)</span> is the complete graph.) It is
+          clear that <span class="inline-math">\(X,Y\)</span> are disjoint and
+          <span class="inline-math">\(X \cup Y = V\)</span>.
+        </p>
+
+        <p>
+          Any pair of vertices
+          <span class="inline-math">\(x_1, x_2 \subseteq X\)</span> must have a
+          positive edge between them. If one of them is
+          <span class="inline-math">\(v\)</span>, then this is true by
+          construction. Otherwise, there is a cycle
+          <span class="inline-math">\(v \rightarrow x_1 \rightarrow x_2\)</span>
+          that must be positive since <span class="inline-math">\(G\)</span> is
+          balanced. Since <span class="inline-math">\((v, x_1)\)</span> and
+          <span class="inline-math">\((v, x_2)\)</span> are positive by
+          definition, it follows that
+          <span class="inline-math">\((x_1, x_2)\)</span> must be positive as
+          well.
+        </p>
+
+        <p>
+          Any pair of vertices
+          <span class="inline-math">\(y_1, y_2 \subseteq Y\)</span> must have a
+          positive edge between them. Otherwise, there is a cycle
+          <span class="inline-math">\(v \rightarrow y_1 \rightarrow y_2\)</span>
+          that must be positive since <span class="inline-math">\(G\)</span> is
+          balanced. Since <span class="inline-math">\((v, y_1)\)</span> and
+          <span class="inline-math">\((v, y_2)\)</span> are negative by
+          definition, it follows that
+          <span class="inline-math">\((y_1, y_2)\)</span> must be positive. This
+          satisfies the theorem.
+        </p>
+
+        <p>
+          <strong>← Direction:</strong> Suppose there is a cut
+          <span class="inline-math">\(S, T\)</span> that satisfies the theorem.
+          Since any cycle must have an even number of edges crossing the cut,
+          the cycle will be positive.
+        </p>
+
+        <h3>Lemma 2.</h3>
+
+        <p>
+          <strong
+            >Every subgraph of a balanced signed graph is also balanced.</strong
+          >
+        </p>
+
+        <h3>Proof.</h3>
+
+        <p>
+          Every cycle in the subgraph corresponds to a cycle in the original
+          graph, so it must be positive.
+        </p>
+
+        <h3>Theorem 3.</h3>
+
+        <p>
+          <strong
+            >A signed graph is balanced if and only if for all pairs of distinct
+            vertices <span class="inline-math">\(u, v\)</span> all paths between
+            <span class="inline-math">\(u\)</span> and
+            <span class="inline-math">\(v\)</span> have the same sign.</strong
+          >
+        </p>
+
+        <h3>Proof.</h3>
+
+        <p>
+          <strong>→ Direction:</strong> Suppose
+          <span class="inline-math">\(G\)</span> is balanced. Consider any two
+          paths
+          <span class="inline-math">\(\alpha_1, \alpha_2\)</span> connecting
+          <span class="inline-math">\(u\)</span> and
+          <span class="inline-math">\(v\)</span>. Deleting the common edges from
+          <span class="inline-math">\(\alpha_1\)</span> and
+          <span class="inline-math">\(\alpha_2\)</span> (if any) yields a
+          collection of edge-disjoint cycles. Let
+          <span class="inline-math">\(z\)</span> be an arbitrary cycle from this
+          collection. <span class="inline-math">\(z\)</span> is comprised of a
+          subset of edges from <span class="inline-math">\(\alpha_1\)</span> and
+          a subset from <span class="inline-math">\(\alpha_2\)</span>. Since
+          <span class="inline-math">\(G\)</span> is balanced,
+          <span class="inline-math">\(z\)</span> is a positive cycle, so the
+          subsets <span class="inline-math">\(\alpha_1\)</span> and
+          <span class="inline-math">\(\alpha_2\)</span> must have the same sign.
+          Since each subset shares the same sign, and the common edges are
+          common to both paths, it follows that
+          <span class="inline-math">\(\alpha_1\)</span> and
+          <span class="inline-math">\(\alpha_2\)</span> must have the same sign.
+        </p>
+
+        <p>
+          <strong>← Direction:</strong> Suppose all paths between any pair of
+          vertices <span class="inline-math">\(u, v\)</span> have the same sign.
+          Then any cycle containing <span class="inline-math">\(u\)</span> and
+          <span class="inline-math">\(v\)</span> must be positive. Since
+          <span class="inline-math">\(u\)</span> and
+          <span class="inline-math">\(v\)</span> are arbitrary, all cycles must
+          be positive.
+        </p>
+
+        <p>We are now ready to extend Theorem 1 to general signed graphs.</p>
+
+        <h3>Theorem 4.</h3>
+
+        <p>
+          <strong
+            >A signed graph is balanced if and only if there is a cut
+            <span class="inline-math">\(S, T\)</span> such that all internal
+            edges
+            <span class="inline-math"
+              >\(S \leftrightarrow S\), T \leftrightarrow T\)</span
+            >
+            are positive and all cross edges
+            <span class="inline-math">\(S \leftrightarrow T\)</span> edges are
+            negative.</strong
+          >
+        </p>
+
+        <h3>Proof.</h3>
+
+        <p>
+          <strong>→ Direction:</strong> Suppose
+          <span class="inline-math">\(G\)</span> is balanced, and without loss
+          of generality that <span class="inline-math">\(G\)</span> is
+          connected. Let <span class="inline-math">\(u, v\)</span> be a pair of
+          vertices that are not connected by an edge. By Theorem 3, all paths
+          between <span class="inline-math">\(u\)</span> and
+          <span class="inline-math">\(v\)</span> must have the same sign. If we
+          add an edge <span class="inline-math">\((u, v)\)</span> with this
+          sign, all new cycles introduced are positive, and
+          <span class="inline-math">\(G\)</span> remains balanced. If we
+          continue this process until <span class="inline-math">\(G\)</span> is
+          the complete graph, the theorem follows from Theorem 1.
+        </p>
+
+        <p>
+          <strong>← Direction:</strong> Suppose a cut
+          <span class="inline-math">\(S, T\)</span> exists. For each pair of
+          vertices <span class="inline-math">\(u, v\)</span> that are not
+          connected by an edge, add a positive edge between them if they are
+          both in <span class="inline-math">\(S\)</span> or both in
+          <span class="inline-math">\(T\)</span>. Otherwise, add a negative
+          edge. Once <span class="inline-math">\(G\)</span> is the complete
+          graph, the theorem follows from Theorem 1.
+        </p>
+
+        <h2 id="random">Random Signed Graphs</h2>
+
+        <p>
+          Now we explore a model of random signed graphs
+          <span class="inline-math">\(G_{n,p,q}\)</span> that closely follows
+          the Erdős–Rényi model. Let
+          <span class="inline-math">\(p, q\)</span> be fixed with
+          <span class="inline-math">\(0 < p+q < 1\)</span>. Given a set of
+          <span class="inline-math">\(n\)</span> vertices, between each pair of
+          distinct vertices <span class="inline-math">\(x\)</span> and
+          <span class="inline-math">\(y\)</span> there is either a positive edge
+          with probability <span class="inline-math">\(p\)</span> or a negative
+          edge with probability <span class="inline-math">\(q\)</span>, or else
+          there is no edge at all with probability
+          <span class="inline-math">\(1 - (p+q)\)</span>. The edges between
+          different pairs of vertices are chosen independently.
+        </p>
+
+         <div style="margin: auto; max-width: 300px; text-align: center">
+          <div
+            id="graph-container"
+            style="width: 100%; height: 300px; background: white"
+          ></div>
+        </div>
+
+        <p>
+          We present an alternate way to view
+          <span class="inline-math">\(G_{n,p,q}\)</span>. Let
+          <span class="inline-math">\(\widetilde{G}_{n,p,q}\)</span> be a random
+          unsigned graph which has the same probability distribution as the
+          standard random graph
+          <span class="inline-math">\(G_{n,p+q}\)</span> with edge probability
+          <span class="inline-math">\(p + q\)</span>. We denote
+          <span class="inline-math">\(E(\widetilde{G}_{n,p,q})\)</span> as this
+          graph’s edge set. Then, for any fixed pair of vertices
+          <span class="inline-math">\(x, y\)</span> assign:
+        </p>
+
+        <div class="display math">
+          $$ P\!\left(\{x,y\}\text{ is positive in }G_{n,p,q}\ \middle|\
+          \{x,y\}\in E(\widetilde{G}_{n,p,q})\right) = \frac{p}{p+q} $$
+        </div>
+
+        <div class="display math">
+          $$ P\!\left(\{x,y\}\text{ is negative in }G_{n,p,q}\ \middle|\
+          \{x,y\}\in E(\widetilde{G}_{n,p,q})\right) = \frac{q}{p+q} $$
+        </div>
+
+        <p>
+          In other words, <span class="inline-math">\(G_{n,p,q}\)</span> can be
+          considered as the random variable on the set of the signed graphs on
+          <span class="inline-math">\(n\)</span> vertices whose probability
+          distribution is given by
+        </p>
+
+        <div class="display math">
+          $$ P(G_{n,p,q} = G) = p^{m} q^{k} (1-p-q)^{\binom{n}{2}-m-k} $$
+        </div>
+
+        <p>
+          where <span class="inline-math">\(G\)</span> is a signed graph with
+          <span class="inline-math">\(m\)</span> positive edges and
+          <span class="inline-math">\(k\)</span> negative edges. From
+          <a href="#ref-MMM12">[MMM12]</a> we get the following theorem.
+        </p>
+
+        <h3>Theorem 5.</h3>
+
+        <p>
+          <strong
+            >Let <span class="inline-math">\(p, q\)</span> be fixed with
+            <span class="inline-math">\(0 < p+q < 1\)</span>. Then
+            <span class="inline-math">\(G_{n,p,q}\)</span> is unbalanced with
+            high probability.</strong
+          >
+        </p>
+
+        <p>First, we will prove the following useful lemma.</p>
+
+        <h3>Lemma 6.</h3>
+
+        <p>
+          <strong
+            >Let <span class="inline-math">\(H\)</span> be a fixed set of
+            <span class="inline-math">\(h\)</span> distinct pairs of vertices of
+            <span class="inline-math">\(G_{n,p,q}\)</span>. Then</strong
+          >
+        </p>
+
+        <div class="display math">
+          $$ P\!\left(H\text{ is positive in }G_{n,p,q}\ \middle|\ H\subseteq
+          E(\widetilde{G}_{n,p,q})\right) = \tfrac{1}{2}\left[1 +
+          \left(\frac{p-q}{p+q}\right)^h\right] $$
+        </div>
+
+        <div class="display math">
+          $$ P\!\left(H\text{ is negative in }G_{n,p,q}\ \middle|\ H\subseteq
+          E(\widetilde{G}_{n,p,q})\right) = \tfrac{1}{2}\left[1 -
+          \left(\frac{p-q}{p+q}\right)^h\right] $$
+        </div>
+
+        <h3>Proof.</h3>
+
+        <p>Let</p>
+
+        <div class="display math">
+          $$ p_1 = P(H\text{ is positive in }G_{n,p,q}\ | \ H\subseteq
+          E(\widetilde{G}_{n,p,q})) = \sum_{i \text{ even}} P(|H^-| = i) $$
+        </div>
+
+        <p>
+          where <span class="inline-math">\(|H^-|\)</span> is the number of
+          negative edges in <span class="inline-math">\(H\)</span>. Then,
+        </p>
+
+        <div class="display math">
+          $$ p_1 = \frac{1}{(p+q)^h}\sum_{i \text{ even}} \binom{h}{i} q^i
+          p^{h-i} $$
+        </div>
+
+        <p>Similarly, let</p>
+
+        <div class="display math">
+          $$ p_2 = P(H\text{ is negative in }G_{n,p,q}\ | \ H\subseteq
+          E(\widetilde{G}_{n,p,q})) = \frac{1}{(p+q)^h}\sum_{i \text{ odd}}
+          \binom{h}{i} q^i p^{h-i} $$
+        </div>
+
+        <p>
+          Then we get the system of equations
+          <span class="inline-math">\(p_1 + p_2 = 1\)</span> and
+          <span class="inline-math"
+            >\(p_1 - p_2 = \left(\frac{p-q}{p+q}\right)^h\)</span
+          >. Solving the system completes the proof of the theorem.
+        </p>
+
+        <p>
+          Now we are ready to prove Theorem 5. Let
+          <span class="inline-math">\(T\)</span> denote a maximum set of
+          edge-disjoint triangles in the complete graph
+          <span class="inline-math">\(K_n\)</span>. To prove the theorem, we
+          will show that <span class="inline-math">\(G_{n,p,q}\)</span> contains
+          a negative triangle from <span class="inline-math">\(T\)</span> with
+          high probability.
+        </p>
+
+        <p>
+          It is clear that
+          <span class="inline-math"
+            >\(|T| \ge \left\lfloor \tfrac{n}{3} \right\rfloor\)</span
+          >. Let <span class="inline-math">\(T\)</span> be a fixed element of
+          <span class="inline-math">\(T\)</span>. We have
+        </p>
+
+        <div class="display math">
+          $$ P\!\left(T \subseteq \widetilde{G}_{n,p,q} \text{ and } T \text{ is
+          negative}\right) = P\!\left(T \text{ is negative } \middle| \ T
+          \subseteq \widetilde{G}_{n,p,q}\right) \times P\!\left(T \subseteq
+          \widetilde{G}_{n,p,q}\right) $$
+        </div>
+
+        <p>Using Theorem 6, we get</p>
+
+        <div class="display math">
+          $$ P\!\left(T \subseteq E(\widetilde{G}_{n,p,q}) \text{ and } T \text{
+          is negative}\right) = \tfrac{1}{2}\left[1 -
+          \left(\frac{p-q}{p+q}\right)^3\right] (p+q)^3 =
+          \tfrac{1}{2}\left[(p+q)^3 - (p-q)^3\right] $$
+        </div>
+
+        <p>
+          Thus, the probability that
+          <span class="inline-math">\(G_{n,p,q}\)</span> contains a negative
+          triangle from <span class="inline-math">\(T\)</span> is at least
+        </p>
+
+        <div class="display math">
+          $$ 1 - \left(1 - \tfrac{1}{2}\left[(p+q)^3 -
+          (p-q)^3\right]\right)^{\lfloor n/3 \rfloor} $$
+        </div>
+
+        <p>
+          Since <span class="inline-math">\(p\)</span> and
+          <span class="inline-math">\(q\)</span> are fixed, this expression
+          tends to 1 as <span class="inline-math">\(n \to \infty\)</span>.
+        </p>
+
+        <p>
+          We can interpret this theorem to say that balance in social systems is
+          very rare as the number of people grows without any predefined social
+          structure.
+        </p>
+
+        <p class="pdfmessage">
+          A PDF version of these notes is available
+          <a href="./pdf/signed_graphs.pdf">here</a>.
+        </p>
+
+        <h2 id="references">References</h2>
+
+        <p id="ref-CH56">
+          [CH56] Dorwin Cartwright and Frank Harary. “Structural balance: a
+          generalization of Heider’s theory”. In: Psychological Review 63.5
+          (1956), pp. 277–293. doi: 10.1037/h0046049.
+        </p>
+
+        <p id="ref-Har53">
+          [Har53] Frank Harary. “On the notion of balance of a signed graph”.
+          In: Michigan Mathematical Journal 2.2 (1953), pp. 143–146. doi:
+          10.1307/mmj/1028989917.
+        </p>
+
+        <p id="ref-HK80">
+          [HK80] Frank Harary and Jerald A. Kabell. “A simple algorithm to
+          detect balance in signed graphs”. In: Mathematical Social Sciences 1.1
+          (1980), pp. 131–136.
+        </p>
+
+        <p id="ref-MMM12">
+          [MMM12] Abdelhakim El Maftouhi, Yannis Manoussakis, and Olga
+          Megalakaki. “Balance in Random Signed Graphs”. In: Internet
+          Mathematics 8.4 (2012), pp. 364–380. doi:
+          10.1080/15427951.2012.719877.
+        </p>
+      </article>
+    </div>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // Scene setup
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xffffff); // White background
+
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+      const container = document.getElementById("graph-container");
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      renderer.setSize(containerWidth, containerHeight);
+      camera.aspect = containerWidth / containerHeight;
+      camera.updateProjectionMatrix();
+      container.appendChild(renderer.domElement);
+
+      // Graph parameters
+      const numNodes = 25;
+      const nodes = [];
+      const edges = [];
+      const nodeGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+      const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Black nodes
+      const positiveEdgeMaterial = new THREE.LineBasicMaterial({
+        color: 0x006400,
+      }); // Dark green edges
+      const negativeEdgeMaterial = new THREE.LineBasicMaterial({
+        color: 0x8b0000,
+      }); // Dark red edges
+
+      // Create a group to hold all graph elements
+      const graphGroup = new THREE.Group();
+      scene.add(graphGroup);
+
+      // Generate node positions in a sphere
+      for (let i = 0; i < numNodes; i++) {
+        const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
+
+        // Distribute nodes roughly in a sphere
+        const phi = Math.acos(-1 + (2 * i) / numNodes);
+        const theta = Math.sqrt(numNodes * Math.PI) * phi;
+        const radius = 15;
+
+        node.position.x = radius * Math.cos(theta) * Math.sin(phi);
+        node.position.y = radius * Math.cos(phi);
+        node.position.z = radius * Math.sin(theta) * Math.sin(phi);
+
+        nodes.push(node);
+        graphGroup.add(node);
+      }
+
+      // Create edges with two different colors
+      const positiveEdgeVertices = [];
+      const negativeEdgeVertices = [];
+
+      for (let i = 0; i < numNodes; i++) {
+        for (let j = i + 1; j < numNodes; j++) {
+          // Create edge with probability to make it dense but not complete
+          if (Math.random() < 0.35) {
+            // Adjust this value to control density
+            const vertices = [
+              nodes[i].position.x,
+              nodes[i].position.y,
+              nodes[i].position.z,
+              nodes[j].position.x,
+              nodes[j].position.y,
+              nodes[j].position.z,
+            ];
+
+            // Randomly assign edge to positive or negative (50/50 chance)
+            if (Math.random() < 0.5) {
+              positiveEdgeVertices.push(...vertices);
+            } else {
+              negativeEdgeVertices.push(...vertices);
+            }
+          }
+        }
+      }
+
+      // Create positive edges (dark green)
+      if (positiveEdgeVertices.length > 0) {
+        const positiveEdgeGeometry = new THREE.BufferGeometry();
+        positiveEdgeGeometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(positiveEdgeVertices, 3)
+        );
+        const positiveEdgeLines = new THREE.LineSegments(
+          positiveEdgeGeometry,
+          positiveEdgeMaterial
+        );
+        graphGroup.add(positiveEdgeLines);
+      }
+
+      // Create negative edges (dark red)
+      if (negativeEdgeVertices.length > 0) {
+        const negativeEdgeGeometry = new THREE.BufferGeometry();
+        negativeEdgeGeometry.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(negativeEdgeVertices, 3)
+        );
+        const negativeEdgeLines = new THREE.LineSegments(
+          negativeEdgeGeometry,
+          negativeEdgeMaterial
+        );
+        graphGroup.add(negativeEdgeLines);
+      }
+
+      // Position camera (zoomed in)
+      camera.position.z = 25;
+      camera.position.y = 10;
+      camera.lookAt(0, 0, 0);
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Slowly rotate the entire graph
+        graphGroup.rotation.y += 0.005;
+        graphGroup.rotation.x += 0.002;
+
+        renderer.render(scene, camera);
+      }
+
+      // Handle window resize
+      function handleResize() {
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight;
+
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newWidth, newHeight);
+      }
+
+      window.addEventListener("resize", handleResize);
+
+      // Start animation
+      animate();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // Triangle visualization setup
+      const triangleScene = new THREE.Scene();
+      triangleScene.background = new THREE.Color(0xffffff);
+
+      const triangleCamera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const triangleRenderer = new THREE.WebGLRenderer({ antialias: true });
+
+      const triangleContainer = document.getElementById("triangles-container");
+      const triangleContainerWidth = triangleContainer.clientWidth;
+      const triangleContainerHeight = triangleContainer.clientHeight;
+
+      triangleRenderer.setSize(triangleContainerWidth, triangleContainerHeight);
+      triangleCamera.aspect = triangleContainerWidth / triangleContainerHeight;
+      triangleCamera.updateProjectionMatrix();
+      triangleContainer.appendChild(triangleRenderer.domElement);
+
+      // Materials for triangles
+      const nodeGeom = new THREE.SphereGeometry(0.3, 12, 12);
+      const nodeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const positiveEdgeMat = new THREE.LineBasicMaterial({
+        color: 0x006400,
+        linewidth: 3,
+      });
+      const negativeEdgeMat = new THREE.LineBasicMaterial({
+        color: 0x8b0000,
+        linewidth: 3,
+      });
+
+      // Create four triangle groups
+      const triangleGroups = [];
+      const triangleSpacing = 8;
+      const startX = -12;
+
+      // Triangle configurations: [top-left edge, top-right edge, bottom edge]
+      const triangleConfigs = [
+        [true, true, true], // All positive
+        [true, true, false], // Top and sides positive, bottom negative
+        [false, true, false], // Top negative, sides and bottom mixed
+        [false, false, false], // All negative
+      ];
+
+      // Text labels for each triangle
+      const triangleLabels = [
+        "Balanced: everyone happy",
+        "Unbalanced: love triangle", 
+        "Balanced: common enemy",
+        "Unbalanced: no alliances"
+      ];
+
+      for (let t = 0; t < 4; t++) {
+        const group = new THREE.Group();
+        const config = triangleConfigs[t];
+
+        // Position group
+        group.position.x = startX + t * triangleSpacing;
+
+        // Create triangle vertices (equilateral triangle)
+        const radius = 2;
+        const vertices = [
+          new THREE.Vector3(0, radius, 0), // top
+          new THREE.Vector3(-radius * 0.866, -radius * 0.5, 0), // bottom left
+          new THREE.Vector3(radius * 0.866, -radius * 0.5, 0), // bottom right
+        ];
+
+        // Add nodes
+        vertices.forEach((vertex) => {
+          const node = new THREE.Mesh(nodeGeom, nodeMat);
+          node.position.copy(vertex);
+          group.add(node);
+        });
+
+        // Add edges
+        const edges = [
+          [vertices[0], vertices[1]], // top-left edge
+          [vertices[0], vertices[2]], // top-right edge
+          [vertices[1], vertices[2]], // bottom edge
+        ];
+
+        edges.forEach((edge, i) => {
+          const geometry = new THREE.BufferGeometry();
+          const edgeVertices = [
+            edge[0].x,
+            edge[0].y,
+            edge[0].z,
+            edge[1].x,
+            edge[1].y,
+            edge[1].z,
+          ];
+          geometry.setAttribute(
+            "position",
+            new THREE.Float32BufferAttribute(edgeVertices, 3)
+          );
+
+          const material = config[i] ? positiveEdgeMat : negativeEdgeMat;
+          const line = new THREE.LineSegments(geometry, material);
+          group.add(line);
+        });
+
+        triangleGroups.push(group);
+        triangleScene.add(group);
+
+        // Add text label below triangle (separate from rotating group)
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = 512;
+        canvas.height = 128;
+        
+        context.fillStyle = '#000000';
+        context.font = '32px monospace';
+        context.textAlign = 'center';
+        context.fillText(triangleLabels[t], canvas.width / 2, canvas.height / 2 + 8);
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        const textMaterial = new THREE.MeshBasicMaterial({ 
+          map: texture, 
+          transparent: true,
+          alphaTest: 0.1
+        });
+        const textGeometry = new THREE.PlaneGeometry(6, 1.5);
+        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        textMesh.position.set(startX + t * triangleSpacing, -4, 0);
+        triangleScene.add(textMesh); // Add directly to scene instead of group
+      }
+
+      // Position camera for triangles (reduce perspective so it's straight-on)
+      triangleCamera.position.set(0, 0, 50);
+      triangleCamera.fov = 10; // narrower FOV to minimize skew
+      triangleCamera.updateProjectionMatrix();
+      triangleCamera.lookAt(0, 0, 0);
+
+      // Animation loop for triangles
+      function animateTriangles() {
+        requestAnimationFrame(animateTriangles);
+
+        // Rotate each triangle group
+        triangleGroups.forEach((group, index) => {
+          group.rotation.z += 0.01 + index * 0.002; // Different rotation speeds
+        });
+
+        triangleRenderer.render(triangleScene, triangleCamera);
+      }
+
+      // Handle resize for triangles
+      function handleTriangleResize() {
+        const newWidth = triangleContainer.clientWidth;
+        const newHeight = triangleContainer.clientHeight;
+
+        triangleCamera.aspect = newWidth / newHeight;
+        triangleCamera.updateProjectionMatrix();
+        triangleRenderer.setSize(newWidth, newHeight);
+      }
+
+      window.addEventListener("resize", handleTriangleResize);
+
+      // Start triangle animation
+      animateTriangles();
+    </script>
+
+    <!-- End of document -->
+  </body>
+</html>
