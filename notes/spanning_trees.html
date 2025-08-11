@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Efficiently Sampling Spanning Trees</title>
+    <link rel="stylesheet" href="note_style.css" />
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <script>
+      // Mobile redirection script
+      function checkMobileAndRedirect() {
+        const mobileThreshold = 768; // pixels
+        if (window.innerWidth < mobileThreshold) {
+          // Redirect to PDF version for mobile devices
+          window.location.href = 'pdf/spanning_trees.pdf';
+        }
+      }
+      
+      // Check on page load
+      checkMobileAndRedirect();
+      
+      // Also check on window resize in case user rotates device
+      window.addEventListener('resize', checkMobileAndRedirect);
+    </script>
+
+    <div class="container">
+      <a href="../index.html" class="back-button">Back to Homepage</a>
+      
+      <header>
+        <h1>Efficiently Sampling Spanning Trees</h1>
+        <p class="byline">April 2025</p>
+        <p class="author">Jay Dharmadhikari</p>
+      </header>
+
+      <article>
+        <h2 id="introduction">Introduction</h2>
+
+        <p>
+          Sampling from complex distributions is at the heart of many problem-solving approaches in combinatorics and optimization. A common distribution is the set of all spanning trees on a connected graph, and a number of algorithms exist for constructing a uniform random sample efficiently. Some applications are:
+        </p>
+
+        <ul>
+          <li>Evaluating the reliability of networks by generating random routing patterns and stress-testing them</li>
+          <li>Sampling random Euler paths that have applications in genome sequencing and data analysis</li>
+          <li>Generating well-formed random mazes</li>
+        </ul>
+
+        <p>Our goal is to walk through some helpful ideas and algorithms.</p>
+
+        <h2 id="random-mst">Random Edge-Weight MST</h2>
+
+        <p>
+          A project for University of Washington CSE 373 (Data Structures and Algorithms) asks students to generate a maze by the following method:
+        </p>
+
+        <ol>
+          <li>Create "rooms" and "walls" on a grid.</li>
+          <li>Assign each room to a vertex and each line (i.e. the border between two rooms) to an edge.</li>
+          <li>Assign each edge a random weight and run a minimum spanning tree algorithm.</li>
+        </ol>
+
+        <div style="text-align: center;">
+          <img src="img/maze-mst.png" alt="Maze generated using MST" style="max-width: 33%; height: auto;" />
+        </div>
+
+        <p>
+          The resulting minimum spanning tree can be converted into a maze by deleting the walls corresponding to the edges that remain. This creates a well-formed maze because there is exactly one path from the top left corner to the bottom right, there are no unreachable rooms, and has an appropriate complexity due to its randomness. While this method is simple enough to be a coding exercise for a class project and produces visually appealing results, it is unfortunately <em>not</em> a uniformly random sample of all possible spanning trees of a graph. The following example illustrates why.
+        </p>
+
+        <p>
+          Suppose we have a graph with four vertices connected by five edges consisting of a square and diagonal. Then, the resulting graph has eight possible spanning trees, so we would expect that any one of them could be chosen with probability <span class="inline-math">\(1/8\)</span>. However, this is not true for the random edge-weight MST method.
+        </p>
+
+        <p>
+          Observe that there are four spanning trees that include the diagonal and four otherwise. </p>
+        <div style="text-align: center;">
+          <img src="img/eight.png" alt="Maze generated using MST" style="max-width: 33%; height: auto;" />
+        </div>
+        <p>If we consider the random edge weights as creating a random permutation of the edges, then there are five equally likely cases for the diagonal edge:
+        </p>
+
+        <ol>
+          <li>The diagonal is first in the order (assigned the lowest weight randomly.) In this case, the diagonal is guaranteed to be included in the generated spanning tree.</li>
+          <li>The diagonal is second. In this case, the diagonal is still guaranteed to be included in the generated spanning tree.</li>
+          <li>The diagonal is third. Whether the diagonal is included in the spanning tree depends on the edge on the two edges that are before it. If it will create a cycle with the first two edges, then it will not be included. There are <span class="inline-math">\(\binom{4}{2} = 6\)</span> different choices for the first two edges, and 2 of them result in the diagonal <em>not</em> being included. Thus, the probability that the diagonal is in the MST given that it is third in the random ordering is <span class="inline-math">\(2/3\)</span>.</li>
+          <li>The diagonal is fourth. It is guaranteed to not be in the MST.</li>
+          <li>The diagonal is fifth. it is not in the MST.</li>
+        </ol>
+
+        <p>
+          Since each of the cases is equally likely, we get that
+        </p>
+
+        <div class="display math">
+          $$\mathbb{P}(\text{diagonal in MST}) = \frac{1}{5} + \frac{1}{5} + \frac{2}{3} \cdot \frac{1}{5} = \frac{8}{15}$$
+        </div>
+
+        <p>
+          Even though half of the possible spanning trees contain a diagonal, the random edge-weight MST will pick a spanning tree with a diagonal more than half the time. While simple and intuitive, this method does not sample a uniformly random spanning tree. However, there is some work on how the resulting distribution behaves; <a href="#ref-goldschmidt2019random">[GS19]</a> characterizes the separation between the random MST and the uniform distribution over trees as the number of vertices approaches infinity. The first paragraph of <a href="#ref-aldous1990model">[A90b]</a> states that the star graph is much more favored when sampling from <span class="inline-math">\(K_n\)</span>. While not truly random over all trees, this approach is useful in modeling fluid dynamics <a href="#ref-fluid">[DDMMDHM04]</a> and remains an aesthetically pleasing way to generate a maze.
+        </p>
+
+        <hr class="pagebreak" />
+
+        <h2 id="prufer">Prüfer Codes</h2>
+
+        <p>
+          We now formalize the problem and discuss methods to solve it. Let <span class="inline-math">\(G = (V, E)\)</span> be an undirected connected graph with vertex set <span class="inline-math">\(V\)</span> and edge set <span class="inline-math">\(E\)</span>. A spanning tree <span class="inline-math">\(S \subseteq E\)</span> is a subset of the edges forming a tree that contains all vertices in <span class="inline-math">\(V\)</span>. Let <span class="inline-math">\(\mathcal{T}\)</span> be the set of all spanning trees on <span class="inline-math">\(G\)</span>. Our goal is to create a random function <span class="inline-math">\(f: G \to S\)</span> such that the probability of generating any given spanning tree is <span class="inline-math">\(1/|\mathcal{T}|\)</span>.
+        </p>
+
+        <p>
+          How large can <span class="inline-math">\(\mathcal{T}\)</span> be? For <span class="inline-math">\(K_n\)</span>, the complete graph on <span class="inline-math">\(n\)</span> vertices, Cayley <a href="#ref-cayley1889theorem">[C89]</a> calculates that <span class="inline-math">\(|\mathcal{T}| = n^{n-2}\)</span>. For any graph, we can calculate it using Kirchhoff's Matrix-Tree Theorem, which states that <span class="inline-math">\(|\mathcal{T}|\)</span> can be computed by finding any cofactor of the graph's Laplacian matrix.
+        </p>
+
+        <h3 id="thm-cayley">Theorem (Cayley's Formula)</h3>
+        <p>
+          For every <span class="inline-math">\(n > 0\)</span>, the number of trees on <span class="inline-math">\(n\)</span> labeled vertices is <span class="inline-math">\(n^{n-2}\)</span>.
+        </p>
+
+        <h3 id="thm-matrixtree">Theorem (Matrix-Tree Theorem)</h3>
+        <p>
+          For an undirected graph <span class="inline-math">\(G\)</span> with spanning trees <span class="inline-math">\(\mathcal{T}\)</span>, <span class="inline-math">\(|\mathcal{T}| = \det L_G^{(ii)}\)</span> for any <span class="inline-math">\(i\)</span> where <span class="inline-math">\(L_G\)</span> denotes the Laplacian of <span class="inline-math">\(G\)</span> and <span class="inline-math">\(L_G^{(ii)}\)</span> represents the <span class="inline-math">\((i,i)\)</span> minor of <span class="inline-math">\(L_G\)</span>.
+        </p>
+
+        <p>
+          We will prove the Cayley theorem repeatedly, and we defer the proof of the Matrix-Tree Theorem to later. These results prove that the number of possible spanning trees on a graph can be intractably large, which makes it computationally infeasible to generate the full set of spanning trees and pick one at random. Instead, we will aim to generate a sample <em>stochastically</em>, i.e. to construct a random process that samples from the space of all spanning trees with uniform probability without explicitly enumerating them all.
+        </p>
+
+        <p>
+          One such method is a <strong>Prüfer code</strong>. The philosophy of Prüfer codes is to encode each tree of <span class="inline-math">\(G\)</span> into a unique sequence of numbers, then devise an algorithm to efficiently generate random encodings. An encoding is given by Prüfer <a href="#ref-prufer1918neuer">[P18]</a>, who describes polynomial time procedures for encoding a tree on <span class="inline-math">\(n\)</span> vertices as a sequence of <span class="inline-math">\(n-2\)</span> vertices. At a high level, the sequence iteratively removes leaves and writes down their neighbors until two vertices remain.
+        </p>
+
+        <p>
+          Any sequence of <span class="inline-math">\(n-2\)</span> integers in <span class="inline-math">\(\{1,2,\ldots,n\}\)</span> is a Prüfer code for a unique tree on <span class="inline-math">\(n\)</span> vertices. This directly gives a polynomial time algorithm for generating a random tree on <span class="inline-math">\(n\)</span> vertices: assign each vertex a label, randomly generate <span class="inline-math">\(n-2\)</span> integers, construct the tree. The decoding sequence naively takes <span class="inline-math">\(O(n^2)\)</span> time, but we conjecture it is possible to optimize using combinations of arrays and linked lists. A glaring limitation of this method is that it samples a spanning tree on <span class="inline-math">\(K_n\)</span> and cannot be restricted to a particular graph or edge set. We will turn our attention to specific graphs in the next section.
+        </p>
+
+        <p>
+          We can also use the uniqueness of Prüfer codes to prove Cayley's formula. There is a clear bijection between codes of size <span class="inline-math">\(n - 2\)</span> and labeled trees on <span class="inline-math">\(n\)</span> vertices. Since there are precisely <span class="inline-math">\(n^{n-2}\)</span> such codes, we can conclude that the number of labeled trees on <span class="inline-math">\(n\)</span> vertices is also <span class="inline-math">\(n^{n-2}\)</span>. □
+        </p>
+
+        <hr class="pagebreak" />
+
+        <h2 id="random-walks">Random Walks</h2>
+
+        <p>
+          While Prüfer codes are a straightforward technique to sample a uniform spanning tree on the complete graph <span class="inline-math">\(K_n\)</span>, they aren't helpful when we attempt to sample from a fixed undirected graph <span class="inline-math">\(G\)</span>. Thus we turn our attention to a much more powerful and theoretically popular technique: sampling a spanning tree via a random walk on <span class="inline-math">\(G\)</span>. This walk can be represented as a Markov chain, which unlocks the machinery used to study Markov chains and allows us to find efficient solutions to the spanning tree problem.
+        </p>
+
+        <p>
+          The basic algorithm is found in numerous notes and papers, but the simplest description of the walk is by Broder <a href="#ref-broder1989generating">[B89]</a>:
+        </p>
+
+        <ol>
+          <li>Simulate a simple random walk on <span class="inline-math">\(G\)</span> starting at an arbitrary vertex <span class="inline-math">\(s\)</span> until every vertex is visited. For each vertex <span class="inline-math">\(i \in V - s\)</span> collect the edge <span class="inline-math">\(j, i\)</span> that corresponds to the first entrance to vertex <span class="inline-math">\(i\)</span>. Let <span class="inline-math">\(T\)</span> be this collection of edges.</li>
+          <li>Output the set <span class="inline-math">\(T\)</span>.</li>
+        </ol>
+
+        <p>
+          We will study the formulation given by Aldous in <a href="#ref-aldous1990random">[A90a]</a>, discovered independently in the same year as Broder. Formally, let <span class="inline-math">\(G\)</span> be an undirected connected graph on <span class="inline-math">\(n\)</span> vertices. We define a random walk as a discrete Markov chain where each vertex is a state and the transition matrix <span class="inline-math">\(P\)</span> is defined as
+        </p>
+
+        <div class="display math">
+          \[ P(u,v) = \begin{cases} 
+                1/\text{deg($u$)} & \text{if $(u, v)$ is an edge} \\
+                0 & \text{otherwise}
+             \end{cases} \]
+        </div>
+
+        <p>
+          We begin a random walk on an arbitrary vertex <span class="inline-math">\(v_0\)</span>, denoted as <span class="inline-math">\((v_0;\; j \ge 0)\)</span>. Then, for each vertex <span class="inline-math">\(u\)</span> let <span class="inline-math">\(T_u\)</span> be the first "hitting time" of <span class="inline-math">\(u\)</span>:
+        </p>
+
+        <div class="display math">
+          $$T_u = \min\{i \ge 0 : v_i = u\}$$
+        </div>
+
+        <p>
+          Then, we define our spanning tree to consist of the <span class="inline-math">\(n-1\)</span> edges that "discover" a new vertex:
+        </p>
+
+        <div class="display math">
+          $$\mathcal{T}_G = \{(v_{T_v-1}, v_{T_v}) : v \neq v_0\}$$
+        </div>
+
+        <p>
+          The cover time <span class="inline-math">\(C\)</span> of the walk is the time taken to visit all vertices:
+        </p>
+
+        <div class="display math">
+          $$C = \max_v T_v$$
+        </div>
+
+        <p>
+          It is clear why this walk produces a spanning tree — each vertex has an edge connected to it, and no cycles are created because that would require adding an edge between two vertices that have already been discovered, creating a contradiction. However, it is also true that this produces a <em>uniform</em> random spanning tree on <span class="inline-math">\(G\)</span>.
+        </p>
+
+        <p>
+          It is also clear that the running time of the algorithm is <span class="inline-math">\(C\)</span>. The walk is proven in <a href="#ref-aleliunas1979random">[AKLR79]</a> to have expected cover time <span class="inline-math">\(O(n^3)\)</span>, and for <em>most</em> graphs achieves <span class="inline-math">\(O(n \log n)\)</span>. These are due to connections between the structure of <span class="inline-math">\(G\)</span> and the mixing time of the Markov chain, which are discussed briefly in <a href="#ref-broder1989generating">[B89]</a>. The Aldous, Broder, and similar formulations are treated as a family of random spanning tree algorithms called <em>cover-time</em> algorithms.
+        </p>
+
+        <hr class="pagebreak" />
+
+        <h3 id="proof-aldous-broder">Proof of Aldous-Broder</h3>
+
+        <p>
+          We now prove that the Aldous-Broder algorithm produces a uniform spanning tree over <span class="inline-math">\(G\)</span>. Our strategy is:
+        </p>
+
+        <ol>
+          <li>Create a set <span class="inline-math">\(\mathcal{S}\)</span> of <em>rooted</em> spanning trees on <span class="inline-math">\(G\)</span>.</li>
+          <li>Define a Markov Chain on <span class="inline-math">\(\mathcal{S}\)</span> and connect it with the algorithm's walk.</li>
+          <li>Show that the chain on <span class="inline-math">\(\mathcal{S}\)</span> has a uniform stationary distribution that is also its limiting distribution.</li>
+          <li>Extend to unrooted trees.</li>
+        </ol>
+
+        <p>
+          A <em>rooted tree</em> is a pair <span class="inline-math">\((T, v)\)</span> of a tree <span class="inline-math">\(T\)</span> and a vertex <span class="inline-math">\(v\)</span> in the tree that is considered the root of the tree. There are no modifications to the tree nor are we assigning directions to edges; this is simply defined for analysis. Let <span class="inline-math">\(\mathcal{S}\)</span> be the set of all rooted spanning trees on <span class="inline-math">\(G\)</span>. Since every unrooted tree shows up exactly <span class="inline-math">\(n\)</span> times in <span class="inline-math">\(\mathcal{S}\)</span> with different roots, sampling uniformly from <span class="inline-math">\(\mathcal{S}\)</span> is equivalent to sampling a random spanning tree.
+        </p>
+
+        <p>
+          We now define <span class="inline-math">\(S_i\)</span> as the spanning tree generated by taking the random walk and only considering steps of the random walk at time <span class="inline-math">\(i\)</span> and after:
+        </p>
+
+        <div class="display math">
+          $$T_u = \min\{j \ge i : v_j = u\}$$
+        </div>
+
+        <p>
+          We consider <span class="inline-math">\(S_i\)</span> to be rooted at its first vertex, i.e. the vertex visited in the original walk at time <span class="inline-math">\(i\)</span>. Considering each <span class="inline-math">\(S_i\)</span> a state, we see that the <span class="inline-math">\(S_i\)</span>'s form a Markov chain over <span class="inline-math">\(\mathcal{S}\)</span>. Then we consider the <em>reverse</em> transition probabilities <span class="inline-math">\(Q\)</span> of <span class="inline-math">\(S_i\)</span>:
+        </p>
+
+        <div class="display math">
+          $$Q(t, t') = P(S_{-1} = t' \; | \; S_0 = t)$$
+        </div>
+
+        <p>
+          Let <span class="inline-math">\(\deg(t)\)</span> be the degree of the root vertex of a tree <span class="inline-math">\(t\)</span>. Then we get two consequences:
+        </p>
+
+        <ul>
+          <li>Given <span class="inline-math">\(t\)</span>, there are exactly <span class="inline-math">\(\deg(t)\)</span> trees <span class="inline-math">\(t'\)</span> such that <span class="inline-math">\(Q(t, t') = 1/\deg(t)\)</span>, and <span class="inline-math">\(Q(t, t') = 0\)</span> for all other trees <span class="inline-math">\(t'\)</span>.</li>
+          <li>Given <span class="inline-math">\(t'\)</span>, there are exactly <span class="inline-math">\(\deg(t')\)</span> trees <span class="inline-math">\(t\)</span> such that <span class="inline-math">\(Q(t, t') = 1/\deg(t)\)</span>, and <span class="inline-math">\(Q(t, t') = 0\)</span> for all other trees <span class="inline-math">\(t\)</span>.</li>
+        </ul>
+
+        <p>
+          This means that for a fixed tree <span class="inline-math">\(t'\)</span>,
+        </p>
+
+        <div class="display math">
+          $$\sum_t \deg(t) Q(t,t') = \deg(t')$$
+        </div>
+
+        <p>
+          It can be shown that this implies the stationary distribution of the Markov chain on <span class="inline-math">\(\mathcal{S}\)</span> is proportional to each tree's root degree <span class="inline-math">\(\deg(t)\)</span>. Furthermore, it is clear that this chain is irreducible as we can reach any <span class="inline-math">\(t\)</span> from some other <span class="inline-math">\(t'\)</span> by taking the path to the root vertex and constructing a depth-first search which leads to <span class="inline-math">\(t\)</span>.
+        </p>
+
+        <p>
+          Since the chain on <span class="inline-math">\(\mathcal{S}\)</span> has stationary distribution equivalent to <span class="inline-math">\(\deg(t)\)</span>, and each unrooted spanning tree shows up with every vertex as a root exactly once, we can "marginalize" the root and we get that the algorithm samples each unrooted spanning tree uniformly. □
+        </p>
+
+        <p>
+          The use of "reverse transition probabilities" is a brief window into a long line of work analyzing <em>reversible</em> Markov chains and their applications to graph theory. The reader may survey Aldous' work for generalized results and another proof of Cayley's formula.
+        </p>
+
+        <hr class="pagebreak" />
+
+        <h3 id="wilson">Wilson's Algorithm</h3>
+
+        <p>
+          It turns out that Aldous-Broder is the most straightforward of the walk-based algorithms but <em>not</em> the fastest. In fact, Wilson <a href="#ref-wilson1996">[W96]</a> gives a result which is never slower than Aldous-Broder, and faster in many cases. Yuval Wigderson gives a nice formulation, which we restate. Given <span class="inline-math">\(G\)</span> and a root vertex <span class="inline-math">\(r\)</span>, we define a growing sequence of rooted trees <span class="inline-math">\(T_i\)</span> as follows:
+        </p>
+
+        <ol>
+          <li>Set <span class="inline-math">\(T_0\)</span> to be <span class="inline-math">\(r\)</span>.</li>
+          <li>If <span class="inline-math">\(T_i\)</span> is a spanning tree on <span class="inline-math">\(G\)</span>, stop and output. Otherwise, pick a random vertex <span class="inline-math">\(v\)</span> not in <span class="inline-math">\(T_i\)</span> and run a random walk from <span class="inline-math">\(v\)</span> until a vertex in <span class="inline-math">\(T_i\)</span> is hit. Erase loops in the path from <span class="inline-math">\(v\)</span> to <span class="inline-math">\(T_i\)</span>, then set <span class="inline-math">\(T_{i+1} = T_i \cup v\)</span>.</li>
+        </ol>
+
+        <p>
+          This algorithm works for weighted or directed graphs as well, and produces the analog of a uniform random spanning tree in those settings. We skip the proof, but note that the running time is improved from the cover time to the <em>mean hitting time</em> of the graph.
+        </p>
+
+        <hr class="pagebreak" />
+
+        <h2 id="unexplored">Unexplored Directions</h2>
+
+        <ul>
+          <li>An alternate method similar to Prüfer codes is given in <a href="#ref-ranking">[CDN89]</a>. The authors assign each spanning tree a <em>ranking</em> within the set of all spanning trees, then describe an <span class="inline-math">\(O(n^3)\)</span> algorithm for converting between a rank and a spanning tree on <span class="inline-math">\(G\)</span>. Counting the number possible spanning trees then generating a random rank yields an <span class="inline-math">\(O(n^3)\)</span> method for sampling from spanning trees.</li>
+          <li>It can also be observed that spanning trees form the bases of a matroid on <span class="inline-math">\(G\)</span>, and thus we can use machinery created to sample from bases of a matroid to achieve the goal. There is active work at the University of Washington being done in this area; the reader may survey <a href="#ref-schramm2022lecture5">[S22]</a> and its listed references if interested.</li>
+          <li>The proof of Cayley's/Matrix-Tree result hinges on the fact that for any edge <span class="inline-math">\(e\)</span>, if <span class="inline-math">\(G-e\)</span> is the graph without <span class="inline-math">\(e\)</span> and <span class="inline-math">\(G \cdot e\)</span> is the graph with <span class="inline-math">\(e\)</span> contracted, the number of spanning trees on <span class="inline-math">\(G\)</span> is the sum of the trees on <span class="inline-math">\(G-e\)</span> and <span class="inline-math">\(G \cdot e\)</span>. This implies a simple algorithm by Guénoche in <a href="#ref-genoche1983random">[G83]</a> that repeatedly deletes and contracts edges until a spanning tree is created. It can been shown that this algorithm runs in <span class="inline-math">\(O(n^5)\)</span>.</li>
+        </ul>
+
+        <hr class="pagebreak" />
+
+        <h2 id="kirchhoff">Deferred Proof of Kirchhoff's Theorem</h2>
+
+        <p>
+          We prove the Matrix-Tree Theorem by induction, restating the proof given by Moore (see <a href="#ref-moore2011nature">[M11]</a>). The base case is a graph with a single vertex and no edges. The minor of its Laplacian will be the <span class="inline-math">\(0 \times 0\)</span> matrix, which has determinant 1, so the result holds. Assume that the result holds for graphs with fewer vertices or edges. For the inductive step, choose a vertex <span class="inline-math">\(i\)</span> and suppose that <span class="inline-math">\(G\)</span> has two or more vertices. If <span class="inline-math">\(i\)</span> has no edges, <span class="inline-math">\(G\)</span> is disconnected and no spanning trees exist; the determinant of the Laplacian will be zero. So we can assume that <span class="inline-math">\(i\)</span> is connected to another vertex <span class="inline-math">\(j\)</span> via an edge <span class="inline-math">\((i,j)\)</span> which we call <span class="inline-math">\(e\)</span>.
+        </p>
+
+        <p>
+          We consider two modifications to <span class="inline-math">\(G\)</span>: deleting <span class="inline-math">\(e\)</span> to make <span class="inline-math">\(G-e\)</span>, and contracting the edge to merge <span class="inline-math">\(i\)</span> and <span class="inline-math">\(j\)</span> into a single vertex, making <span class="inline-math">\(G \cdot e\)</span>. We observe (skipping a proof) that the number of spanning trees on <span class="inline-math">\(G\)</span> is the sum of the trees on <span class="inline-math">\(G-e\)</span> and <span class="inline-math">\(G \cdot e\)</span>. Now reorder the vertices of <span class="inline-math">\(G\)</span> such that <span class="inline-math">\(i\)</span> and <span class="inline-math">\(j\)</span> are the first two, and we can write the Laplacian of <span class="inline-math">\(G\)</span> as the following:
+        </p>
+
+        <div class="display math">
+          $$
+          L_G = \left(
+          \begin{array}{c|c|c}
+          d_i & -1 & r_i^T \\
+          \hline
+          -1 & d_j & r_j^T \\
+          \hline
+          r_i & r_j & L'
+          \end{array}
+          \right)
+          $$
+        </div>
+
+        <p>
+          Here <span class="inline-math">\(r_i\)</span> and <span class="inline-math">\(r_j\)</span> are <span class="inline-math">\((n-2)\)</span>-dimensional column vectors describing the connections between <span class="inline-math">\(i\)</span> and <span class="inline-math">\(j\)</span> and the other <span class="inline-math">\(n-2\)</span> vertices, and <span class="inline-math">\(L'\)</span> is the <span class="inline-math">\((n-2)\)</span>-dimensional minor describing the rest of the graph. We can write the Laplacians of <span class="inline-math">\(G-e\)</span> and <span class="inline-math">\(G \cdot e\)</span> as
+        </p>
+
+        <div class="display math">
+          $$
+          L_{G-e} = \left(
+          \begin{array}{c|c|c}
+          d_i - 1 & 0 & r_i^T \\
+          \hline
+          0 & d_j - 1 & r_j^T \\
+          \hline
+          r_i & r_j & L'
+          \end{array}
+          \right), \quad
+          L_{G \cdot e} = \left(
+          \begin{array}{c|c}
+          d_i + d_j - 2 & r_i^T + r_j^T \\
+          \hline
+          r_i + r_j & L'
+          \end{array}
+          \right)
+          $$
+        </div>
+
+        <p>
+          To finish the induction, we want to show that
+        </p>
+
+        <div class="display math">
+          $$\det L_G^{(ii)} = \det L_{G-e}^{(ii)} + \det L_{G \cdot e}^{(jj)}$$
+        </div>
+
+        <p>
+          which corresponds to
+        </p>
+
+        <div class="display math">
+          $$\det \left(\begin{array}{c|c} d_j & r_j^T \\ \hline r_j & L' \end{array}\right) = \det \left(\begin{array}{c|c} d_j - 1 & r_j^T \\ \hline r_j & L' \end{array}\right) + \det L'$$
+        </div>
+
+        <p>
+          But this follows from the fact that the determinant of a matrix can be written as a linear combination of its <em>cofactors</em>, i.e., the determinants of its minors. Specifically, for any <span class="inline-math">\(A\)</span> we have
+        </p>
+
+        <div class="display math">
+          $$\det A = \sum_{j=1}^{n} (-1)^j A_{1,j} \det A^{(1,j)}$$
+        </div>
+
+        <p>
+          Thus if two matrices differ only in their <span class="inline-math">\((1,1)\)</span> entry, with <span class="inline-math">\(A_{1,1} = B_{1,1} + 1\)</span> and <span class="inline-math">\(A_{ij} = B_{ij}\)</span> for all other <span class="inline-math">\(i,j\)</span>, their determinants differ by the determinant of their <span class="inline-math">\((1,1)\)</span> minor, <span class="inline-math">\(\det A = \det B + \det A^{(1,1)}\)</span>. Applying this to <span class="inline-math">\(L_G^{(ii)}\)</span> and <span class="inline-math">\(L_{G-e}^{(ii)}\)</span> yields the above equation and completes the proof. □
+        </p>
+
+        <p>
+          This result is often used to prove Cayley's formula. The Laplacian of <span class="inline-math">\(K_n\)</span> looks like:
+        </p>
+
+        <div class="display math">
+          $$
+          \begin{bmatrix}
+          n-1 & -1 & \cdots & -1 \\
+          -1 & n-1 & \cdots & -1 \\
+          \vdots & \vdots & \ddots & \vdots \\
+          -1 & -1 & \cdots & n-1
+          \end{bmatrix}
+          $$
+        </div>
+
+        <p>
+          which has determinant <span class="inline-math">\(n^{n-2}\)</span> for any <span class="inline-math">\((i,i)\)</span>-minor.
+        </p>
+
+        <p class="pdfmessage">
+          A PDF version of these notes is available
+          <a href="./pdf/spanning_trees.pdf">here</a>.
+        </p>
+
+        <h2 id="references">References</h2>
+
+        <ul>
+          <li id="ref-goldschmidt2019random">[GS19] Christina Goldschmidt. <em>Random minimum spanning trees</em>. Mathematical Institute, University of Oxford, 2019. Retrieved 2019-09-13.</li>
+          <li id="ref-aldous1990model">[A90b] David J. Aldous. A Random Tree Model Associated with Random Graphs. <em>Random Structures and Algorithms</em>, 1(4):383–402, 1990. doi:10.1002/RSA.3240010402.</li>
+          <li id="ref-fluid">[DDMMDHM04] P. M. Duxbury, R. Dobrin, E. McGarrity, J. H. Meinke, A. Donev, C. Musolff, and E. A. Holm. Network Algorithms and Critical Manifolds in Disordered Systems. In David P. Landau, Steven P. Lewis, and Heinz-Bernd Schüttler, editors, <em>Computer Simulation Studies in Condensed-Matter Physics XVI</em>, pages 181–194, Berlin, Heidelberg, 2004. Springer Berlin Heidelberg.</li>
+          <li id="ref-cayley1889theorem">[C89] A. Cayley. A theorem on trees. <em>Quarterly Journal of Pure and Applied Mathematics</em>, 23:376–378, 1889.</li>
+          <li id="ref-prufer1918neuer">[P18] Heinz Prüfer. Neuer Beweis eines Satzes über Permutationen. <em>Archiv der Mathematik und Physik</em>, 27:742–744, 1918.</li>
+          <li id="ref-broder1989generating">[B89] A. Broder. Generating random spanning trees. In <em>Proc. 30'th IEEE Symp. Found. Comp. Sci.</em>, pages 442–447, 1989.</li>
+          <li id="ref-aldous1990random">[A90a] David J. Aldous. The Random Walk Construction of Uniform Spanning Trees and Uniform Labelled Trees. <em>SIAM Journal on Discrete Mathematics</em>, 3(4):450–465, 1990. doi:10.1137/0403039.</li>
+          <li id="ref-aleliunas1979random">[AKLR79] R. Aleliunas, R. M. Karp, R. J. Lipton, L. Lovász, and C. Rackoff. Random walks, universal traversal sequences, and the complexity of maze traversal. In <em>Proc. 20th IEEE Symp. Found. Comp. Sci.</em>, pages 218–233, 1979.</li>
+          <li id="ref-wilson1996">[W96] David Bruce Wilson. Generating random spanning trees more quickly than the cover time. In <em>Proceedings of the Twenty-Eighth Annual ACM Symposium on Theory of Computing</em>, STOC '96, pages 296–303, New York, NY, USA, 1996. Association for Computing Machinery. doi:10.1145/237814.237880.</li>
+          <li id="ref-ranking">[CDN89] Charles J. Colbourn, Robert P.J. Day, and Louis D. Nel. Unranking and ranking spanning trees of a graph. <em>Journal of Algorithms</em>, 10(2):271–286, June 1989. doi:10.1016/0196-6774(89)90016-3.</li>
+          <li id="ref-schramm2022lecture5">[S22] Tselil Schramm. <em>Lecture 5: Approximate Sampling of Spanning Trees via Matroid Basis Exchange</em>. Lecture notes for STATS 221: Random Processes on Graphs and Lattices, Stanford University, January 19, 2022. Available at https://web.stanford.edu/class/stats221/.</li>
+          <li id="ref-genoche1983random">[G83] A. Genoche. Random Spanning Tree. <em>J. Algorithms</em>, 4:214–220, 1983.</li>
+          <li id="ref-moore2011nature">[M11] Cristopher Moore. <em>The nature of computation</em>. Oxford University Press, Oxford, England New York, 2011. ISBN 978-0-19-923321-2.</li>
+        </ul>
+      </article>
+    </div>
+    <!-- End of document -->
+  </body>
+</html>
