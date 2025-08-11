@@ -4,91 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Structure Theorems for Signed Graphs</title>
-    <style>
-      /* Article-style layout with padding on both sides */
-      :root {
-        --maxw: 1024px;
-        --pad: 40px;
-        --lead: 1.45;
-        --serif: Georgia, "Times New Roman", Times, serif;
-        --mono: "Courier New", Courier, monospace;
-        --sans: monospace;
-      }
-      html,
-      body {
-        height: 100%;
-        color: #111;
-        font-family: var(--sans);
-        line-height: var(--lead);
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        max-width: var(--maxw);
-        margin: 36px auto;
-        padding: var(--pad);
-        background: #fff;
-        border-radius: 8px;
-      }
-      header h1 {
-        margin: 0 0 6px 0;
-        font-size: 32px;
-        letter-spacing: -0.3px;
-      }
-      header p.byline {
-        margin: 0 0 22px 0;
-        color: #555;
-        font-family: var(--sans);
-      }
-      h2 {
-        margin-top: 28px;
-        font-size: 20px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 6px;
-      }
-      h3 {
-        margin-top: 20px;
-        font-size: 16px;
-      }
-      p {
-        margin: 10px 0;
-        font-size: 16px;
-      }
-      a {
-        color: #8b0000;
-        text-decoration: none;
-      }
-      pre.math {
-        margin: 14px 0;
-        padding: 12px 16px;
-        background: #f7f7f7;
-        border-left: 4px solid #e0e0e0;
-        overflow: auto;
-        font-family: var(--mono);
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-      .display {
-        margin: 14px 0;
-      }
-      code.inline {
-        background: #f2f2f2;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: var(--mono);
-      }
-      ul {
-        margin: 8px 0 8px 22px;
-      }
-      .pdfmessage {
-        margin-top: 28px;
-        color: #666;
-      }
-      /* small rules to keep LaTeX-looking content aligned */
-      .equation {
-        margin: 12px 0;
-      }
-    </style>
+    <link rel="stylesheet" href="note_style.css" />
     <script
       id="MathJax-script"
       async
@@ -104,7 +20,25 @@
     </script>
   </head>
   <body>
+    <script>
+      // Mobile redirection script
+      function checkMobileAndRedirect() {
+        const mobileThreshold = 768; // pixels
+        if (window.innerWidth < mobileThreshold) {
+          // Redirect to PDF version for mobile devices
+          window.location.href = 'pdf/signed_graphs.pdf';
+        }
+      }
+      
+      // Check on page load
+      checkMobileAndRedirect();
+      
+      // Also check on window resize in case user rotates device
+      window.addEventListener('resize', checkMobileAndRedirect);
+    </script>
     <div class="container">
+      <a href="../index.html" class="back-button">Back to Homepage</a>
+      
       <header>
         <h1>Structure Theorems for Signed Graphs</h1>
         <p class="byline">June 2025</p>
@@ -225,12 +159,8 @@
           the cycle will be positive.
         </p>
 
-        <h3>Lemma 2.</h3>
-
         <p>
-          <strong
-            >Every subgraph of a balanced signed graph is also balanced.</strong
-          >
+          <strong>Lemma 2.</strong> Every subgraph of a balanced signed graph is also balanced.
         </p>
 
         <h3>Proof.</h3>
@@ -240,15 +170,11 @@
           graph, so it must be positive.
         </p>
 
-        <h3>Theorem 3.</h3>
-
         <p>
-          <strong
-            >A signed graph is balanced if and only if for all pairs of distinct
-            vertices <span class="inline-math">\(u, v\)</span> all paths between
-            <span class="inline-math">\(u\)</span> and
-            <span class="inline-math">\(v\)</span> have the same sign.</strong
-          >
+          <strong>Theorem 3.</strong> A signed graph is balanced if and only if for all pairs of distinct
+          vertices <span class="inline-math">\(u, v\)</span> all paths between
+          <span class="inline-math">\(u\)</span> and
+          <span class="inline-math">\(v\)</span> have the same sign.
         </p>
 
         <h3>Proof.</h3>
@@ -289,20 +215,16 @@
 
         <p>We are now ready to extend Theorem 1 to general signed graphs.</p>
 
-        <h3>Theorem 4.</h3>
-
         <p>
-          <strong
-            >A signed graph is balanced if and only if there is a cut
-            <span class="inline-math">\(S, T\)</span> such that all internal
-            edges
-            <span class="inline-math"
-              >\(S \leftrightarrow S, T \leftrightarrow T\)</span
-            >
-            are positive and all cross edges
-            <span class="inline-math">\(S \leftrightarrow T\)</span> edges are
-            negative.</strong
+          <strong>Theorem 4.</strong> A signed graph is balanced if and only if there is a cut
+          <span class="inline-math">\(S, T\)</span> such that all internal
+          edges
+          <span class="inline-math"
+            >\(S \leftrightarrow S, T \leftrightarrow T\)</span
           >
+          are positive and all cross edges
+          <span class="inline-math">\(S \leftrightarrow T\)</span> edges are
+          negative.
         </p>
 
         <h3>Proof.</h3>
@@ -399,27 +321,19 @@
           <a href="#ref-MMM12">[MMM12]</a> we get the following theorem.
         </p>
 
-        <h3>Theorem 5.</h3>
-
         <p>
-          <strong
-            >Let <span class="inline-math">\(p, q\)</span> be fixed with
-            <span class="inline-math">\(0 < p+q < 1\)</span>. Then
-            <span class="inline-math">\(G_{n,p,q}\)</span> is unbalanced with
-            high probability.</strong
-          >
+          <strong>Theorem 5.</strong> Let <span class="inline-math">\(p, q\)</span> be fixed with
+          <span class="inline-math">\(0 < p+q < 1\)</span>. Then
+          <span class="inline-math">\(G_{n,p,q}\)</span> is unbalanced with
+          high probability.
         </p>
 
         <p>First, we will prove the following useful lemma.</p>
 
-        <h3>Lemma 6.</h3>
-
         <p>
-          <strong
-            >Let <span class="inline-math">\(H\)</span> be a fixed set of
-            <span class="inline-math">\(h\)</span> distinct pairs of vertices of
-            <span class="inline-math">\(G_{n,p,q}\)</span>. Then</strong
-          >
+          <strong>Lemma 6.</strong> Let <span class="inline-math">\(H\)</span> be a fixed set of
+          <span class="inline-math">\(h\)</span> distinct pairs of vertices of
+          <span class="inline-math">\(G_{n,p,q}\)</span>. Then
         </p>
 
         <div class="display math">

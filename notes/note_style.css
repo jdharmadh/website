@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+      /* Article-style layout with padding on both sides */
+      :root {
+        --maxw: 1024px;
+        --pad: 40px;
+        --lead: 1.45;
+        --serif: Georgia, "Times New Roman", Times, serif;
+        --mono: "Courier New", Courier, monospace;
+        --sans: "Inter", system-ui;
+      }
+      html,
+      body {
+        height: 100%;
+        color: #111;
+        font-family: var(--sans);
+        line-height: var(--lead);
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: var(--maxw);
+        margin: 36px auto;
+        padding: var(--pad);
+        background: #fff;
+        border-radius: 8px;
+      }
+      header h1 {
+        margin: 0 0 6px 0;
+        font-size: 32px;
+        letter-spacing: -0.3px;
+      }
+      header p.byline {
+        margin: 0 0 22px 0;
+        color: #555;
+        font-family: var(--sans);
+      }
+      h2 {
+        margin-top: 28px;
+        font-size: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 6px;
+      }
+      h3 {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+      p {
+        margin: 10px 0;
+        font-size: 16px;
+      }
+      a {
+        color: #8b0000;
+        text-decoration: none;
+      }
+      pre.math {
+        margin: 14px 0;
+        padding: 12px 16px;
+        background: #f7f7f7;
+        border-left: 4px solid #e0e0e0;
+        overflow: auto;
+        font-family: var(--mono);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .display {
+        margin: 14px 0;
+      }
+      code.inline {
+        background: #f2f2f2;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: var(--mono);
+      }
+      ul {
+        margin: 8px 0 8px 22px;
+      }
+      .pdfmessage {
+        margin-top: 28px;
+        color: #666;
+      }
+      /* small rules to keep LaTeX-looking content aligned */
+      .equation {
+        margin: 12px 0;
+      }
+      /* Back button styling */
+      .back-button {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 8px 0px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+      }
+      .back-button:hover {
+        color: darkred;
+      }
+      .back-button::before {
+        content: "← ";
+        margin-right: 4px;
+      }
