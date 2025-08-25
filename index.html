@@ -96,9 +96,6 @@
       .subt {
         font-size: 16px; color: #555; margin-left: 10px; font-weight: normal;
       }
-      /* .subt:hover {
-        color: red;
-      } */
     </style>
 
     <script>
@@ -110,57 +107,96 @@
     </script>
   </head>
   <body>
-    <div style="text-align: center; margin: 20px 0;">
-      <img src="./assets/me.gif" alt="Animated GIF" style="max-width: 100%; height: auto; max-height: 200px; border: 3px solid rgb(70, 70, 70);" />
+    <div style="display: flex; align-items: center; gap: 20px; margin: 20px 0;">
+      <div style="flex-shrink: 0;">
+      <img src="./assets/me.gif" alt="Animated GIF" style="max-width: 200px; height: auto; max-height: 200px; border: 3px solid rgb(70, 70, 70);" />
+      </div>
+      <div style="flex: 1;">
+      <h1 style="font-size: 30px; margin-bottom: 16px; margin-top: 0; text-align: left;">Jay Dharmadhikari</h1>
+      <div class="icons">
+        <a href="https://github.com/jdharmadh" target="_blank"
+        ><img src="./assets/github.png" alt="GitHub"
+        /></a>
+        <a href="mailto:me@jaydharmadhikari.com" target="_blank"
+        ><img src="./assets/mail.png" alt="Email"
+        /></a>
+        <a href="https://www.linkedin.com/in/jay-dharmadhikari/" target="_blank"
+        ><img src="./assets/linkedin.png" alt="LinkedIn"
+        /></a>
+      </div>
+      </div>
     </div>
-    <h1 style="text-align: left; font-size: 30px; margin-bottom: 16px;">Jay Dharmadhikari</h1>
     <style>
       @media (max-width: 600px) {
+      .header-container {
+        flex-direction: column;
+        text-align: left;
+      }
       h1 {
         font-size: 1.5em;
       }
       }
     </style>
-    <div class="icons">
-      <a href="https://github.com/jdharmadh" target="_blank"
-        ><img src="./assets/github.png" alt="GitHub"
-      /></a>
-      <a href="mailto:me@jaydharmadhikari.com" target="_blank"
-        ><img src="./assets/mail.png" alt="Email"
-      /></a>
-      <a href="https://www.linkedin.com/in/jay-dharmadhikari/" target="_blank"
-        ><img src="./assets/linkedin.png" alt="LinkedIn"
-      /></a>
-    </div>
     <p class="description">
-      I study computer science at the
+      I'm a Master's student in computer science at the
       <a href="https://www.cs.washington.edu/" target="_blank"
         >University of Washington</a
-      >. I'm also a software engineering intern at Amazon on the Alexa+ project,
-      where my project's AI event tracking features were
-      <a href="https://www.youtube.com/watch?v=YYbAJ2nh25M" target="_blank"
-        >highlighted at launch</a
-      >. I'm returning to Amazon this summer to work on ML inference to power
-      smarter image search in Amazon Photos.
-      <br />
-      <br />
-      <strong>
-        My career goal is to build systems that are fast, consumer-facing, and
-        algorithmic.
-      </strong>
+      >. I study theory, systems, and the bridge between them. My goal is to build systems that are fast, user-facing, and algorithmic.
     </p>
 
+    <h2>experience</h2>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+        <span class="ti"><strong>Amazon</strong>, Software Engineer Intern</span>
+        <span style="color: #555; font-size: 14px;">Summer 2025</span>
+      </div>
+      <div class="description" style="margin-top: 0; color: gray; padding-right: 23%;">
+       Multimodal inference systems at Amazon Photos Computer Vision. Built a cloud-based system to tag and cluster images with semantic embeddings.
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+        <span class="ti"><strong>Amazon</strong>, Software Engineer Intern</span>
+        <span style="color: #555; font-size: 14px;">Summer 2024</span>
+      </div>
+      <div class="description" style="margin-top: 0; color: gray; padding-right: 25%;">
+        Distributed service for Alexa+, the LLM-powered Alexa. Built a system that continually scans for event tickets matching a user's preferences and pings the user when tickets are available. See it in the launch highlights <a href="https://www.youtube.com/watch?v=YYbAJ2nh25M" target="_blank"
+        >here</a>.
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+        <span class="ti"><strong>University of Washington</strong>, Teaching Staff</span>
+        <span style="color: #555; font-size: 14px;">2023 - Present</span>
+      </div>
+      <div class="description" style="margin-top: 0; color: gray; padding-right: 25%;">
+        Courses: Discrete Math, Probability Theory, Java Programming, Design and Analysis of Algorithms.
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+        <span class="ti"><strong>Cartogram</strong>, Software Engineer Intern</span>
+        <span style="color: #555; font-size: 14px;">2021</span>
+      </div>
+      <div class="description" style="margin-top: 0; color: gray; padding-right: 25%;">
+        Migrating mobile app frameworks from Objective-C to Swift.
+      </div>
+    </div>
     <h2>sandbox</h2>
 
     <a href="https://github.com/jdharmadh/jvim" target="_blank"><span class="ti">jvim</span><span class="subt">Memory-safe modal text editor</span></a><br />
 
     <a href="https://github.com/jdharmadh/jpaint" target="_blank"><span class="ti">jpaint</span><span class="subt">OpenGL paint pad for Mac</span></a><br />
 
-    <a href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/tree" target="_blank"><span class="ti">data structures</span><span class="subt">Trees and Sketches</span></a><br />
+    <a href="https://github.com/jdharmadh/java-ds/" target="_blank"><span class="ti">data structures</span><span class="subt">Library of graphs, trees, and sketches</span></a><br />
 
-    <a href="https://github.com/jdharmadh/jumpseat" target="_blank"><span class="ti">jumpseat</span><span class="subt">Web-based AI text completion</span></a><br />
+    <a href="https://github.com/jdharmadh/jumpseat" target="_blank"><span class="ti">jumpseat</span><span class="subt">Minimalist AI completion playground</span></a><br />
 
-    <a href="https://jdharmadh.github.io/js-canvas-fun/" target="_blank"><span class="ti">canvas games</span><span class="subt">Some games on the HTML Canvas</span></a><br />
+    <a href="https://jdharmadh.github.io/js-canvas-fun/" target="_blank"><span class="ti">canvas games</span><span class="subt">Vibe-coded games on HTML Canvas</span></a><br />
 
     <h2>notes</h2>
     <a href="./notes/signed_graphs.html" target="_blank"><span class="ti">Signed Graphs</span><span class="subt">June 2025</span></a><br />
@@ -170,94 +206,5 @@
     <a href="./notes/spanning_trees.html" target="_blank"><span class="ti">Sampling Spanning Trees</span><span class="subt">April 2025</span></a><br />
 
     <a href="./notes/pdf/kll.pdf" target="_blank"><span class="ti">Quantile Approximation</span><span class="subt">December 2024</span></a><br />
-    <!-- TODO -->
-    <!-- <h2>favorites</h2>
-    <p style="font-size: 18px; margin-top: 0">
-      Music:
-      <em>
-        <a
-          href="https://en.wikipedia.org/wiki/Fr%C3%A9d%C3%A9ric_Chopin"
-          target="_blank"
-          >Chopin</a
-        >,
-        <a href="https://en.wikipedia.org/wiki/Claude_Debussy" target="_blank"
-          >Debussy</a
-        >,
-        <a href="https://www.radiohead.com/" target="_blank">Radiohead</a>
-      </em>
-    </p>
-    <hr
-      style="
-        border: none;
-        border-top: 1px solid #ccc;
-        margin: 4px auto;
-        width: 100%;
-      "
-    />
-    <p style="font-size: 18px; margin-top: 0">
-      Books:
-      <em
-        >1984, The Hitchhiker's Guide to the Galaxy, The Brothers Karamazov</em
-      >
-    </p>
-    <hr
-      style="
-        border: none;
-        border-top: 1px solid #ccc;
-        margin: 4px auto;
-        width: 100%;
-      "
-    />
-
-    <h2>quote machine</h2>
-    <div id="quote-container">
-      <blockquote id="quote">
-        The computer is useless. It can only answer questions. &mdash;
-        <em>Pablo Picasso</em>
-      </blockquote>
-      <button
-        onclick="changeQuote()"
-        style="
-          background-color: darkred;
-          color: white;
-          border: none;
-          padding: 5px 10px;
-          border-radius: 5px;
-          cursor: pointer;
-        "
-      >
-        New Quote
-      </button>
-    </div>
-
-    <script>
-      const quotes = [
-        "The computer is useless. It can only answer questions. &mdash; <em>Pablo Picasso</em>",
-        "Programs must be written for people to read, and only incidentally for machines to execute. &mdash; <em>Harold Abelson</em>",
-        "Any sufficiently advanced technology is indistinguishable from magic. &mdash; <em>Arthur C. Clarke</em>",
-        "First, solve the problem. Then, write the code. &mdash; <em>John Johnson</em>",
-        "Code is like humor. When you have to explain it, it’s bad. &mdash; <em>Cory House</em>",
-      ];
-
-      let lastIndex = -1;
-
-      function changeQuote() {
-        const quoteElement = document.getElementById("quote");
-        let randomIndex;
-
-        do {
-          randomIndex = Math.floor(Math.random() * quotes.length);
-        } while (randomIndex === lastIndex);
-
-        lastIndex = randomIndex;
-        quoteElement.innerHTML = quotes[randomIndex];
-      }
-    </script> -->
-
-    <script>
-      function toggleAccordion(element) {
-        element.parentElement.classList.toggle("open");
-      }
-    </script>
   </body>
 </html>
