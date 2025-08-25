@@ -20,6 +20,30 @@
       }
       a {
         text-decoration: none;
+        display: inline-block;
+      }
+      a .ti {
+        color: black;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      a:hover {
+        color: darkred;
+        transform: scale(1.1);
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+      a:hover .subt {
+        color: darkred;
+        transform: scale(1.2);
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+      a:hover .ti {
+        color: darkred;
+        transform: scale(1.2);
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
+      }
+      a, a .subt, a .ti {
+        transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
       }
       ol {
         font-size: large;
@@ -43,8 +67,8 @@
         margin-right: 0;
       }
       .icons a img {
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         filter: brightness(0) saturate(100%) invert(10%) sepia(73%)
           saturate(3176%) hue-rotate(345deg) brightness(94%) contrast(94%);
       }
@@ -53,67 +77,12 @@
       }
       .description {
         margin-top: 10px;
-        font-size: 18px;
+        font-size: 16px;
         color: #111;
         text-align: left;
         width: 100%;
         margin-left: auto;
         margin-right: auto;
-      }
-      .accordion {
-        margin-top: 10px;
-        width: 100%;
-      }
-      .accordion-header {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        cursor: pointer;
-        padding: 10px 0;
-        position: relative;
-        transition: color 0.3s;
-      }
-      .accordion-header:hover {
-        color: brown;
-      }
-      .accordion-header:hover .arrow {
-        color: brown;
-      }
-      .accordion-header span.title {
-        font-size: 18px;
-        font-weight: bold;
-      }
-      .accordion-header span.subtitle {
-        font-size: 16px;
-        color: #555;
-      }
-      .accordion-header .arrow {
-        width: 24px;
-        height: 24px;
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%) rotate(0deg);
-        transition: transform 0.3s ease, fill 0.3s ease;
-        fill: currentColor;
-      }
-
-      .open .accordion-header .arrow {
-        transform: translateY(-50%) rotate(90deg);
-      }
-
-      .accordion-content {
-        max-height: 0;
-        overflow: hidden;
-        padding: 0 10px;
-        border: 1px solid #ccc;
-        background: #f5f5f5;
-        border-radius: 5px;
-        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s;
-      }
-      .open .accordion-content {
-        max-height: 500px; /* Adjust as needed for your content */
-        padding: 10px;
       }
       body {
         opacity: 0;
@@ -123,6 +92,13 @@
       body.loaded {
         opacity: 1;
       }
+
+      .subt {
+        font-size: 16px; color: #555; margin-left: 10px; font-weight: normal;
+      }
+      /* .subt:hover {
+        color: red;
+      } */
     </style>
 
     <script>
@@ -137,7 +113,7 @@
     <div style="text-align: center; margin: 20px 0;">
       <img src="./assets/me.gif" alt="Animated GIF" style="max-width: 100%; height: auto; max-height: 200px; border: 3px solid rgb(70, 70, 70);" />
     </div>
-    <h1 style="text-align: left; font-size: 2em;">Jay Dharmadhikari</h1>
+    <h1 style="text-align: left; font-size: 30px; margin-bottom: 16px;">Jay Dharmadhikari</h1>
     <style>
       @media (max-width: 600px) {
       h1 {
@@ -176,138 +152,24 @@
 
     <h2>sandbox</h2>
 
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">jvim</span>
-        <span class="subtitle">Memory-safe modal text editor</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Inspired by
-        <a href="https://github.com/antirez/kilo" target="_blank">kilo</a>, I
-        made a C-based text editor that uses minimal memory and is crash-safe.
-        It's got Vim keybindings and find/replace, and you can try it
-        <a href="https://github.com/jdharmadh/jvim" target="_blank">here</a>.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">jpaint</span>
-        <span class="subtitle">OpenGL paint pad for Mac</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        MacOS doesn't have a default paint app, so I made one in C. It's got
-        multiple colors (hold your applause), fill, and stroke eraser. Try it
-        <a href="https://github.com/jdharmadh/jpaint" target="_blank">here</a>.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">data structures</span>
-        <span class="subtitle">Trees and Sketches</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        I wrote some toy implementations of various tree-based data structures.
-        They are efficient for a range of problems related to storing and
-        searching data, and you can see them
-        <a
-          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/tree"
-          target="_blank"
-          >here</a
-        >. I also implemented a couple of data sketches for streaming
-        algorithms, which you can see
-        <a
-          href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/sketch"
-          target="_blank"
-          >here</a
-        >.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">jumpseat</span>
-        <span class="subtitle">Web-based AI text completion</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        A minimalist web-based AI text editor. It's got lots of customizability
-        so I can test different models' capabilities with writing and code
-        completion.
-        <a href="https://github.com/jdharmadh/jumpseat" target="_blank"
-          >Here's</a
-        >
-        the code, and I plan to host it once it's polished.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">canvas games</span>
-        <span class="subtitle">Some games on the HTML Canvas</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        A collection of simple games implemented on the HTML Canvas. You can
-        play them
-        <a href="https://jdharmadh.github.io/js-canvas-fun/" target="_blank"
-          >here</a
-        >.
-      </div>
-    </div>
+    <a href="https://github.com/jdharmadh/jvim" target="_blank"><span class="ti">jvim</span><span class="subt">Memory-safe modal text editor</span></a><br />
+
+    <a href="https://github.com/jdharmadh/jpaint" target="_blank"><span class="ti">jpaint</span><span class="subt">OpenGL paint pad for Mac</span></a><br />
+
+    <a href="https://github.com/jdharmadh/java-ds/tree/main/src/main/java/io/github/jdharmadh/ds/tree" target="_blank"><span class="ti">data structures</span><span class="subt">Trees and Sketches</span></a><br />
+
+    <a href="https://github.com/jdharmadh/jumpseat" target="_blank"><span class="ti">jumpseat</span><span class="subt">Web-based AI text completion</span></a><br />
+
+    <a href="https://jdharmadh.github.io/js-canvas-fun/" target="_blank"><span class="ti">canvas games</span><span class="subt">Some games on the HTML Canvas</span></a><br />
 
     <h2>notes</h2>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Signed Graphs</span>
-        <span class="subtitle">June 2025</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Signed graphs are a way to represent relationships between entities,
-        where edges can be positive or negative. I survey some theorems about
-        their structure and properties, which you can read
-        <a href="./notes/signed_graphs.html" target="_blank">here</a>.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Sublinear Algorithms</span>
-        <span class="subtitle">May 2025</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Approximation algorithms often have very simple descriptions but admit
-        strong properties. I give some examples of these "obvious algorithms" in
-        the streaming model, which you can read
-        <a href="./notes/pdf/sublinear_algorithms.pdf" target="_blank">here</a>.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Sampling Spanning Trees</span>
-        <span class="subtitle">April 2025</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        Given a graph G, can we sample a spanning tree from the uniform
-        distribution of all spanning trees on G? The answer ties together random
-        walks, Markov chains, and linear algebra. Read
-        <a href="./notes/spanning_trees.html" target="_blank">here</a>.
-      </div>
-    </div>
-    <div class="accordion">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="title">Quantile Approximation</span>
-        <span class="subtitle">December 2024</span>
-        <img src="./assets/arrow.svg" alt="Arrow" class="arrow" />
-      </div>
-      <div class="accordion-content">
-        A presentation I gave to my graduate algorithms class about "Optimal
-        Quantile Approximation in Streams" by Karnin, Lang, and Liberty. Read
-        <a href="./notes/pdf/kll.pdf" target="_blank">here</a>.
-      </div>
-    </div>
+    <a href="./notes/signed_graphs.html" target="_blank"><span class="ti">Signed Graphs</span><span class="subt">June 2025</span></a><br />
+
+    <a href="./notes/pdf/sublinear_algorithms.pdf" target="_blank"><span class="ti">Sublinear Algorithms</span><span class="subt">May 2025</span></a><br />
+
+    <a href="./notes/spanning_trees.html" target="_blank"><span class="ti">Sampling Spanning Trees</span><span class="subt">April 2025</span></a><br />
+
+    <a href="./notes/pdf/kll.pdf" target="_blank"><span class="ti">Quantile Approximation</span><span class="subt">December 2024</span></a><br />
     <!-- TODO -->
     <!-- <h2>favorites</h2>
     <p style="font-size: 18px; margin-top: 0">
