@@ -1,0 +1,328 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vehicle Routing</title>
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+    <link rel="stylesheet" href="note_style.css" />
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.157.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+        <a href="../index.html" class="back-button">Back to Homepage</a>
+      
+      <header>
+        <h1>Amazon's Vehicle Routing, Unpacked</h1>
+        <p class="byline">September 2025</p>
+      </header>
+      <article>
+        <p>
+          I recently had a conversation with
+          <a href="https://renatowerneck.wordpress.com" target="_blank"
+            >Renato Werneck</a
+          >, a Senior Principal Scientist at Amazon's Modeling and Optimization
+          team. I reached out after viewing his
+        <a href="https://fastcode.org/events/fastcode-seminar/" target="_blank">excellent talk</a> at FastCode, which discusses how
+        Amazon formulates routes for delivery drivers using a variety of
+        algorithmic techniques. The following notes explore some of the factors that go into vehicle routing for package delivery on a continental scale, omitting proprietary details
+        related to Amazon's specific strategy.
+      </p>
+      <h2 id="the-problem">The Problem</h2>
+      <p>
+        Amazon delivers millions of packages a day through hundreds of
+        fulfillment centers and a large fleet of drivers. Each driver handles
+        &quot;bags&quot; of packages, and they need a specialized route to
+        efficiently deliver all of their assigned packages. Optimizing these
+        routes is crucial to Amazon's business and logistics. There's a laundry
+        list of variables that need to be considered when building these routes,
+        for example:
+      </p>
+      <ul>
+        <li>
+          Which packages should be placed in bags together according to
+          destination, weight, volume, number of stops, delivery guarantees,
+          etc.
+        </li>
+        <li>
+          How roads and addresses are represented within the data (one-way
+          streets, gated neighborhoods)
+        </li>
+        <li>
+          Whether routes are robust and tolerant to issues (closed roads,
+          construction, traffic jams, etc.)
+        </li>
+      </ul>
+      <p>
+        Additionally, there are many contextual variables that are continuously
+        changing:
+      </p>
+      <ul>
+        <li>Traffic conditions, weather conditions, and time of day</li>
+        <li>
+          How experienced the driver is and whether they're comfortable with the
+          area
+        </li>
+        <li>The size and battery life of the delivery van</li>
+      </ul>
+      <p>
+        Finally, routing is not an isolated part of the complete delivery flow.
+        The routes that are built affects how packages need to be organized into
+        bags, how bags are loaded into trucks, and how drivers are assigned
+        during a shift. This makes it necessary to build routes
+        <em>quickly</em> and <em>transparently</em>.
+      </p>
+      <p>
+        It's clear that routing in transportation networks is a massive problem
+        in modeling and optimization. Fortunately, we have tools in our theory
+        toolkit that we can mix and match to create a robust solution.
+      </p>
+      <h2 id="the-problem-theoretically">The Problem, Theoretically</h2>
+      <p>
+        The <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem" target="_blank">traveling salesman problem</a> (TSP) is a well-known
+        theory problem that deals with finding the shortest path that visits
+        each node in a graph once, then returns to the initial node. The
+        canonical <a href="https://en.wikipedia.org/wiki/Vehicle_routing_problem" target="_blank">vehicle routing problem</a> is a generalization
+        of the problem that allows for multiple drivers at once; however, its
+        literature is mostly concerned with exact solutions that are impractical
+        to implement. Instead, we can think of our routing problem as a
+        <a href="https://peerj.com/articles/cs-972/" target="_blank">clustered TSP</a>, where we separate a graph into
+        clusters and create a TSP route for each cluster locally, then create an
+        overall path through clusters. This is good intuition for how routing
+        might work in the real world, where each driver is assigned a local
+        cluster and completes routes within it.
+      </p>
+      <p>
+        <strong
+          >Practically, vehicle routing is a collection of optimization tasks
+          that when combined, create good routes efficiently.</strong
+        >
+      </p>
+      <h2 id="step-1-clustering">Step 1: Clustering</h2>
+      <p>
+        Searching for good routes is difficult in a search space that contains
+        100K+ deliveries spanning the continental US. Instead, as noted above,
+        it helps to chunk the deliveries into clusters that can be solved
+        locally. There are two conventional approaches to doing this:
+      </p>
+      <ul>
+        <li>
+          <strong>Cluster First, Route Second.</strong> Build clusters of
+          deliveries that are close to each other, then search for the best
+          route in each cluster.
+        </li>
+        <li>
+          <strong>Route First, Cluster Second.</strong> Build a giant route that
+          spans every package across the graph, then split that route into
+          locally dense regions and use the regions as clusters.
+        </li>
+      </ul>
+      <p>
+        // TODO: figure here from
+        <a
+          href="https://perso.isima.fr/~lacomme/GT2L/Spring_School/conf/slides/ssiop-plenary-prins.pdf"
+          >https://perso.isima.fr/~lacomme/GT2L/Spring_School/conf/slides/ssiop-plenary-prins.pdf</a
+        >
+      </p>
+      <p>
+        While the first approach is more intuitive, the second can lead to a
+        more efficient search in practice. A production system would use
+        something in between these two options; it would build a route across
+        the graph then use it as a loose suggestion to start creating clusters.
+        Once we have clusters, we need to decide how individual packages will be
+        delivered within a cluster.
+      </p>
+      <h2 id="step-2-ordering">Step 2: Ordering</h2>
+      <p>
+        Now that we have packages divided into clusters, we need to figure out:
+      </p>
+      <ol>
+        <li>How to visit packages in each cluster.</li>
+        <li>How to order the clusters to minimize redundant driving.</li>
+      </ol>
+      <p>
+        Problem 1 is essentially a TSP problem, with the added complexity that
+        we have many options for where to start and finish each cluster. This
+        impacts how a driver assigned multiple clusters might group them
+        together. Since the package number in an individual cluster is small, we
+        can just precompute a TSP for each start/finish combination using a
+        variety of heuristics, and pick each cluster's start/finish to minimize
+        the cost in Problem 2.
+      </p>
+      <p>
+        Problem 2 is actually a dynamic programming problem similar to
+        <a href="https://en.wikipedia.org/wiki/Edit_distance" target="_blank">edit distance</a>, where we sequence clusters to minimize
+        the total cost spent driving between clusters. However, once we figure
+        out a decent arrangement of clusters, we <strong>destroy</strong> the
+        clustering entirely and treat all of the packages as one route again.
+        Then, we use <a href="https://en.wikipedia.org/wiki/Iterated_local_search" target="_blank">iterated local search</a> to explore newer
+        routes that potentially cross cluster boundaries.
+      </p>
+      <p>
+        We can repeat this process of creating and destroying structure in the
+        graph to escape local minima and find routes we're happy with. Our goal
+        isn't to narrow the routes down to the best one, but rather to generate
+        a lot of good <em>potential</em> routes which we will filter through in
+        Step 4.
+      </p>
+      <h2 id="step-3-cost-analysis">Step 3: Cost Analysis</h2>
+      <p>
+        A key step in optimizing our route generation algorithm is the ability
+        to efficiently calculate the <strong>cost</strong> of a given route.
+        When computing thousands or millions of TSP problems between nodes,
+        we're doing an incredible amount of shortest-path queries, so it makes
+        sense to start there.
+      </p>
+      <h3 id="step-3-1-shortest-paths">Step 3.1: Shortest Paths</h3>
+      <p>
+        The classical algorithm for finding the shortest path between two nodes
+        in a graph is <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm" target="_blank">Dijkstra's</a>. It's got great theoretical performance, but
+        there are many improvements we can make in a practical setting. This
+        fantastic survey breaks down the major algorithms and how they perform
+        on real road datasets, some of which include:
+      </p>
+      <ol>
+        <li>
+          <strong>Goal-directed algorithms.</strong> While Dijkstra's computes
+          the shortest paths from a given source to all other nodes in the
+          graph, if we are only looking for a path between nodes (formally
+          called a &quot;point-to-point query&quot;), then we can
+          <em>guide</em> the algorithm to explore paths that get it closer to
+          the target node. The most famous goal-directed algorithm is <a href="https://en.wikipedia.org/wiki/A*_search_algorithm" target="_blank">A* search,</a>
+          frequently used for pathfinding in robotics and 3D games. Others
+          include <a href="https://dl.acm.org/doi/10.1145/1064546.1103378" target="_blank">Geometric Containers</a>, which takes advantage of the graph being
+          on a 2D map to selectively look at paths that are geometrically
+          feasible and clustering, which precomputes distances between major
+          clusters of nodes to speed up a fresh computation.
+        </li>
+        <li>
+          <strong>Hierarchy-based algorithms.</strong> These take advantage of
+          the inherent hierarchy in a road network. For example, if we want to
+          find the shortest route between two towns, we might start with taking
+          local roads to get on a nearby highway, traveling close to the target
+          city, then switching to local roads again. Recognizing that most
+          routes follow a hierarchy of small road -&gt; big road -&gt; small
+          road is the basis for <a href="https://en.wikipedia.org/wiki/Contraction_hierarchies" target="_blank">Contraction Hierarchies</a>, which prioritizes
+         routes which follow this model. Another choice is  <a href="https://renatowerneck.wordpress.com/wp-content/uploads/2016/06/gkw09-reach-dimacs.pdf" target="_blank">Reach</a>, an algorithm
+          which ranks how &quot;central&quot; each node is, then first checks
+          routes that go through central vertices (like how most cities have a
+          major highway interchange that lets you travel basically anywhere.)
+        </li>
+        <li>
+          <strong>Bounded-hop algorithms.</strong> These are relatively new
+          compared to their counterparts, and involve precomputing shortest
+          paths between many nodes and using the precomputation as a
+          &quot;virtual shortcut&quot; during query time.
+        </li>
+      </ol>
+      <p>
+        The shortest path problem on road networks is essentially a tradeoff
+        between preprocessing time/space and query time.
+      </p>
+      <h3 id="step-3-2-auxiliary-factors">Step 3.2: Auxiliary Factors</h3>
+      <p>
+        Transit time is far from the only cost associated with a route.
+        Other factors include:
+      </p>
+      <ul>
+        <li>How familiar a driver is with the route they are assigned to</li>
+        <li>
+          Whether a route violates an expected delivery time for a package
+        </li>
+        <li>Whether each driver gets a somewhat &quot;balanced&quot; route</li>
+      </ul>
+      <p>
+        These are considered by the routing logic in the form of penalties that
+        are added to the cost of a route.
+      </p>
+      <h2 id="step-4-searching">Step 4: Searching</h2>
+      <p>
+        After generating a few million potential routes for many different
+        cluster configurations in Step 2, we need to mix and match them so that
+        every package gets delivered exactly once. This becomes a set
+        partitioning problem, which can be solved using integer linear
+        programming as discussed in this paper. The program's formulation is as
+        follows:
+        <div class="display-math">
+          \[
+          \text{Minimize } \sum_{r \in R} c_r x_r
+          \]
+        </div>
+        <div class="display-math">
+          \[
+          \text{Subject to:}
+          \]
+        </div>
+        <div class="display-math">
+          \[
+          \sum_{r \in R: p \in r} x_r = 1 \quad \forall p \in P
+          \]
+        </div>
+        <div class="display-math">
+          \[
+          x_r \in \{0, 1\} \quad \forall r \in R
+          \]
+        </div>
+        where 
+        <div class="display-math">
+          \( c_r \) is the cost of route \( r \),
+        </div>
+        <div class="display-math">
+          \( x_r \) is a binary variable indicating whether route \( r \) is selected,
+        </div>
+        <div class="display-math">
+          \( R \) is the set of all considered routes,
+        </div>
+        <div class="display-math">
+          \( P \) is the set of all packages, and
+        </div>
+        <div class="display-math">
+          \( p \in r \) means that package \( p \) is included in route \( r \).
+        </div>
+      </p>
+      <p>
+        There are many <a href="https://www.cvxpy.org/" target="_blank">libraries</a> that can provide an optimal solution in
+        minutes, even on instances with 100K+ variables.
+      </p>
+      <p>
+        The <em>context</em> in which routes are created is also important; for
+        example, the shortest path algorithms may need to preprocess in response
+        to new traffic data. This is where insights from
+        <em>algorithm engineering</em> are useful. The core problems in
+        algorithm engineering concern how to run algorithms on large amounts of
+        data that changes often, often by utilizing hardware acceleration or
+        systems programming tools. A fair bit of background on the subject can
+        be found in <a href="https://jshun.csail.mit.edu/6506-s23/" target="_blank">Julian Shun's excellent graduate course</a>.
+      </p>
+      <p>
+        Finally, a great way to tune the search parameters is by listening to
+        direct feedback from delivery drivers. Drivers with years of experience
+        in an area have intuition for what good routes are, and any serious
+        company doing vehicle routing should use this intuition to improve their
+        business logic. Even quick feedback like
+        <em
+          >&quot;how could your route have been planned better today?&quot;</em
+        >
+        can uncover issues quicker than test datasets or fuzzy testing.
+      </p>
+      <h2 id="step-5-delivery-">Step 5: Delivery!</h2>
+      <p>
+        Hopefully, I've gone over a small fraction of the immense work it takes
+        to get an Amazon package to my door in days (and in some cases, hours.)
+        Here are some interesting papers for the extra curious: TODO
+      </p>
+    </article>
+    </div>
+  </body>
+</html>
