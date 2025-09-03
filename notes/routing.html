@@ -27,6 +27,13 @@
         <h1>Amazon's Vehicle Routing, Unpacked</h1>
         <p class="byline">September 2025</p>
       </header>
+      
+      <div class="mobile-message">
+        <h2>📱 Mobile View Not Available</h2>
+        <p>This article contains interactive visualizations and complex content that are best viewed on a desktop or tablet device.</p>
+        <p>Please visit this page on a device with a screen width greater than 768 pixels for the full experience.</p>
+      </div>
+      
       <article>
         <p>
           I recently had a conversation with
@@ -103,9 +110,15 @@
         might work in the real world, where each driver is assigned a local
         cluster and completes routes within it.
       </p>
+      <div style="margin: auto; text-align: center">
+        <div
+          id="clustering-container"
+          style="width: 100%; height: 300px; background: white"
+        ></div>
+      </div>
       <p>
         <strong
-          >Practically, vehicle routing is a collection of optimization tasks
+          >Vehicle routing is a collection of optimization tasks
           that when combined, create good routes efficiently.</strong
         >
       </p>
@@ -128,13 +141,12 @@
           locally dense regions and use the regions as clusters.
         </li>
       </ul>
-      <p>
-        // TODO: figure here from
-        <a
-          href="https://perso.isima.fr/~lacomme/GT2L/Spring_School/conf/slides/ssiop-plenary-prins.pdf"
-          >https://perso.isima.fr/~lacomme/GT2L/Spring_School/conf/slides/ssiop-plenary-prins.pdf</a
-        >
-      </p>
+      <div style="text-align: center; margin: 20px 0;">
+        <img src="img/cluster.jpg" alt="Clustering diagram" style="max-width: 45%; height: auto;">
+        <p style="margin-top: 10px; font-style: italic; color: #666;">
+          Figure from <a href="https://perso.isima.fr/~lacomme/GT2L/Spring_School/conf/slides/ssiop-plenary-prins.pdf" target="_blank">this</a> presentation on clustering approaches.
+        </p>
+      </div>
       <p>
         While the first approach is more intuitive, the second can lead to a
         more efficient search in practice. A production system would use
@@ -160,6 +172,12 @@
         variety of heuristics, and pick each cluster's start/finish to minimize
         the cost in Problem 2.
       </p>
+      <div style="margin: auto; text-align: center">
+        <div
+          id="tsp-container"
+          style="width: 100%; height: 300px; background: white"
+        ></div>
+      </div>
       <p>
         Problem 2 is actually a dynamic programming problem similar to
         <a href="https://en.wikipedia.org/wiki/Edit_distance" target="_blank">edit distance</a>, where we sequence clusters to minimize
@@ -169,6 +187,12 @@
         Then, we use <a href="https://en.wikipedia.org/wiki/Iterated_local_search" target="_blank">iterated local search</a> to explore newer
         routes that potentially cross cluster boundaries.
       </p>
+      <div style="margin: auto; text-align: center">
+        <div
+          id="rearranging-container"
+          style="width: 100%; height: 300px; background: white"
+        ></div>
+      </div>
       <p>
         We can repeat this process of creating and destroying structure in the
         graph to escape local minima and find routes we're happy with. Our goal
@@ -188,8 +212,8 @@
       <p>
         The classical algorithm for finding the shortest path between two nodes
         in a graph is <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm" target="_blank">Dijkstra's</a>. It's got great theoretical performance, but
-        there are many improvements we can make in a practical setting. This
-        fantastic survey breaks down the major algorithms and how they perform
+        there are many improvements we can make in a practical setting. <a href="https://arxiv.org/pdf/1504.05140" target="_blank">This
+        fantastic survey</a> breaks down the major algorithms and how they perform
         on real road datasets, some of which include:
       </p>
       <ol>
@@ -205,6 +229,12 @@
           on a 2D map to selectively look at paths that are geometrically
           feasible and clustering, which precomputes distances between major
           clusters of nodes to speed up a fresh computation.
+          <div style="margin: auto; text-align: center">
+            <div
+              id="goal-directed-container"
+              style="width: 100%; height: 300px; background: white"
+            ></div>
+          </div>
         </li>
         <li>
           <strong>Hierarchy-based algorithms.</strong> These take advantage of
@@ -218,12 +248,24 @@
           which ranks how &quot;central&quot; each node is, then first checks
           routes that go through central vertices (like how most cities have a
           major highway interchange that lets you travel basically anywhere.)
+          <div style="margin: auto; text-align: center">
+            <div
+              id="contraction-hierarchy-container"
+              style="width: 100%; height: 300px; background: white"
+            ></div>
+          </div>
         </li>
         <li>
           <strong>Bounded-hop algorithms.</strong> These are relatively new
           compared to their counterparts, and involve precomputing shortest
           paths between many nodes and using the precomputation as a
           &quot;virtual shortcut&quot; during query time.
+          <div style="margin: auto; text-align: center">
+            <div
+              id="bounded-hop-container"
+              style="width: 100%; height: 300px; background: white"
+            ></div>
+          </div>
         </li>
       </ol>
       <p>
@@ -252,7 +294,7 @@
         cluster configurations in Step 2, we need to mix and match them so that
         every package gets delivered exactly once. This becomes a set
         partitioning problem, which can be solved using integer linear
-        programming as discussed in this paper. The program's formulation is as
+        programming as discussed in <a href="https://www2.imm.dtu.dk/courses/02735/sppintro.pdf" target="_blank">this presentation</a>. The program's formulation is as
         follows:
         <div class="display-math">
           \[
@@ -303,7 +345,7 @@
         algorithm engineering concern how to run algorithms on large amounts of
         data that changes often, often by utilizing hardware acceleration or
         systems programming tools. A fair bit of background on the subject can
-        be found in <a href="https://jshun.csail.mit.edu/6506-s23/" target="_blank">Julian Shun's excellent graduate course</a>.
+        be found in <a href="https://jshun.csail.mit.edu/6506-s23/" target="_blank">Julian Shun's graduate course</a>.
       </p>
       <p>
         Finally, a great way to tune the search parameters is by listening to
@@ -320,9 +362,764 @@
       <p>
         Hopefully, I've gone over a small fraction of the immense work it takes
         to get an Amazon package to my door in days (and in some cases, hours.)
-        Here are some interesting papers for the extra curious: TODO
       </p>
+      
+      <div style="margin: auto; text-align: center; margin-top: 40px;">
+        <div
+          id="delivery-boxes-container"
+          style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"
+        ></div>
+        <p style="margin-top: 10px; font-style: italic; color: #666;">
+          The final step: packages in motion!
+        </p>
+      </div>
     </article>
     </div>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 1. Clustering Animation
+      const clusteringScene = new THREE.Scene();
+      clusteringScene.background = new THREE.Color(0xffffff);
+      const clusteringCamera = new THREE.PerspectiveCamera(55, 1, 0.1, 1000);
+      const clusteringRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const clusteringContainer = document.getElementById("clustering-container");
+      const clusteringWidth = clusteringContainer.clientWidth;
+      const clusteringHeight = clusteringContainer.clientHeight;
+      
+      clusteringRenderer.setSize(clusteringWidth, clusteringHeight);
+      clusteringCamera.aspect = clusteringWidth / clusteringHeight;
+      clusteringCamera.updateProjectionMatrix();
+      clusteringContainer.appendChild(clusteringRenderer.domElement);
+
+      // Create nodes for clustering
+      const clusteringNodes = [];
+      const clusteringGroup = new THREE.Group();
+      clusteringScene.add(clusteringGroup);
+
+      const nodeGeometry = new THREE.SphereGeometry(0.3, 12, 12);
+      const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+      const clusterColors = [0xff6b6b, 0x4ecdc4, 0x45b7d1, 0x96ceb4];
+
+      // Generate clustered nodes
+      for (let cluster = 0; cluster < 4; cluster++) {
+        const centerX = (cluster % 2) * 8 - 4;
+        const centerZ = Math.floor(cluster / 2) * 8 - 4;
+        
+        for (let i = 0; i < 8; i++) {
+          const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+          node.position.x = centerX + (Math.random() - 0.5) * 4;
+          node.position.y = (Math.random() - 0.5) * 2;
+          node.position.z = centerZ + (Math.random() - 0.5) * 4;
+          node.userData = { cluster: cluster, originalColor: 0x333333 };
+          clusteringNodes.push(node);
+          clusteringGroup.add(node);
+        }
+      }
+
+      clusteringCamera.position.set(0, 8, 12);
+      clusteringCamera.lookAt(0, 0, 2);
+
+      let clusteringTime = 0;
+      function animateClustering() {
+        requestAnimationFrame(animateClustering);
+        clusteringTime += 0.02;
+
+        // Animate cluster coloring
+        const colorPhase = Math.sin(clusteringTime * 0.5) * 0.5 + 0.5;
+        clusteringNodes.forEach((node, index) => {
+          if (colorPhase > 0.3) {
+            node.material.color.setHex(clusterColors[node.userData.cluster]);
+          } else {
+            node.material.color.setHex(node.userData.originalColor);
+          }
+        });
+
+        clusteringGroup.rotation.y += 0.005;
+        clusteringRenderer.render(clusteringScene, clusteringCamera);
+      }
+      animateClustering();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 2. TSP Animation
+      const tspScene = new THREE.Scene();
+      tspScene.background = new THREE.Color(0xffffff);
+      const tspCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+      const tspRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const tspContainer = document.getElementById("tsp-container");
+      const tspWidth = tspContainer.clientWidth;
+      const tspHeight = tspContainer.clientHeight;
+      
+      tspRenderer.setSize(tspWidth, tspHeight);
+      tspCamera.aspect = tspWidth / tspHeight;
+      tspCamera.updateProjectionMatrix();
+      tspContainer.appendChild(tspRenderer.domElement);
+
+      const tspGroup = new THREE.Group();
+      tspScene.add(tspGroup);
+
+      // Create a cluster of nodes
+      const tspNodes = [];
+      const tspNodeGeometry = new THREE.SphereGeometry(0.4, 12, 12);
+      const tspNodeMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+      const entryExitMaterial = new THREE.MeshBasicMaterial({ color: 0xff4757 });
+
+      // Create nodes in a rough circle
+      for (let i = 0; i < 6; i++) {
+        const angle = (i / 6) * Math.PI * 2;
+        const radius = 3;
+        const node = new THREE.Mesh(tspNodeGeometry, tspNodeMaterial.clone());
+        node.position.x = Math.cos(angle) * radius;
+        node.position.z = Math.sin(angle) * radius;
+        node.position.y = 0;
+        tspNodes.push(node);
+        tspGroup.add(node);
+      }
+
+      // Create route lines
+      const routeLines = [];
+      const routeMaterial = new THREE.LineBasicMaterial({ color: 0x3742fa, linewidth: 3 });
+
+      tspCamera.position.set(0, 8, 8);
+      tspCamera.lookAt(0, 0, 0);
+
+      let tspTime = 0;
+      let currentRoute = 0;
+      const routes = [
+        [0, 1, 2, 3, 4, 5, 0], // Route 1
+        [0, 2, 4, 1, 5, 3, 0], // Route 2
+        [0, 3, 1, 4, 2, 5, 0]  // Route 3
+      ];
+
+      function animateTSP() {
+        requestAnimationFrame(animateTSP);
+        tspTime += 0.02;
+
+        // Clear previous routes
+        routeLines.forEach(line => tspGroup.remove(line));
+        routeLines.length = 0;
+
+        // Reset node colors
+        tspNodes.forEach(node => node.material.color.setHex(0x333333));
+
+        // Switch routes every 2 seconds
+        if (Math.floor(tspTime * 0.5) !== currentRoute) {
+          currentRoute = Math.floor(tspTime * 0.5) % routes.length;
+        }
+
+        // Highlight entry/exit points
+        const route = routes[currentRoute];
+        tspNodes[route[0]].material.color.setHex(0xff4757); // Entry point
+        tspNodes[route[route.length - 2]].material.color.setHex(0xff4757); // Exit point
+
+        // Draw current route
+        for (let i = 0; i < route.length - 1; i++) {
+          const start = tspNodes[route[i]].position;
+          const end = tspNodes[route[i + 1]].position;
+          
+          const geometry = new THREE.BufferGeometry();
+          const vertices = [start.x, start.y, start.z, end.x, end.y, end.z];
+          geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+          
+          const line = new THREE.Line(geometry, routeMaterial);
+          routeLines.push(line);
+          tspGroup.add(line);
+        }
+
+        tspGroup.rotation.y += 0.005;
+        tspRenderer.render(tspScene, tspCamera);
+      }
+      animateTSP();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 3. Rearranging Clusters Animation
+      const rearrangingScene = new THREE.Scene();
+      rearrangingScene.background = new THREE.Color(0xffffff);
+      const rearrangingCamera = new THREE.PerspectiveCamera(40, 1, 0.1, 1000);
+      const rearrangingRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const rearrangingContainer = document.getElementById("rearranging-container");
+      const rearrangingWidth = rearrangingContainer.clientWidth;
+      const rearrangingHeight = rearrangingContainer.clientHeight;
+      
+      rearrangingRenderer.setSize(rearrangingWidth, rearrangingHeight);
+      rearrangingCamera.aspect = rearrangingWidth / rearrangingHeight;
+      rearrangingCamera.updateProjectionMatrix();
+      rearrangingContainer.appendChild(rearrangingRenderer.domElement);
+
+      const rearrangingGroup = new THREE.Group();
+      rearrangingScene.add(rearrangingGroup);
+
+      // Create cluster groups
+      const clusters = [];
+      const clusterGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+      const clusterMaterials = [
+        new THREE.MeshBasicMaterial({ color: 0xff6b6b }),
+        new THREE.MeshBasicMaterial({ color: 0x4ecdc4 }),
+        new THREE.MeshBasicMaterial({ color: 0x45b7d1 })
+      ];
+
+      for (let c = 0; c < 3; c++) {
+        const cluster = new THREE.Group();
+        for (let i = 0; i < 5; i++) {
+          const node = new THREE.Mesh(clusterGeometry, clusterMaterials[c]);
+          node.position.x = (Math.random() - 0.5) * 2;
+          node.position.y = (Math.random() - 0.5) * 2;
+          node.position.z = (Math.random() - 0.5) * 2;
+          cluster.add(node);
+        }
+        clusters.push(cluster);
+        rearrangingGroup.add(cluster);
+      }
+
+      // Initial positions
+      const positions = [
+        [{ x: -4, y: 0, z: 0 }, { x: 0, y: 0, z: 0 }, { x: 4, y: 0, z: 0 }],
+        [{ x: -2, y: 0, z: -3 }, { x: 2, y: 0, z: -3 }, { x: 0, y: 0, z: 3 }],
+        [{ x: 0, y: 0, z: -4 }, { x: -3, y: 0, z: 2 }, { x: 3, y: 0, z: 2 }]
+      ];
+
+      rearrangingCamera.position.set(0, 8, 8);
+      rearrangingCamera.lookAt(0, 0, 0);
+
+      let rearrangingTime = 0;
+      let currentArrangement = 0;
+
+      function animateRearranging() {
+        requestAnimationFrame(animateRearranging);
+        rearrangingTime += 0.02;
+
+        // Switch arrangements every 3 seconds
+        const newArrangement = Math.floor(rearrangingTime * 0.33) % positions.length;
+        if (newArrangement !== currentArrangement) {
+          currentArrangement = newArrangement;
+        }
+
+        // Smoothly move clusters to new positions
+        clusters.forEach((cluster, index) => {
+          const targetPos = positions[currentArrangement][index];
+          cluster.position.lerp(new THREE.Vector3(targetPos.x, targetPos.y, targetPos.z), 0.02);
+          cluster.rotation.y += 0.01;
+        });
+
+        rearrangingRenderer.render(rearrangingScene, rearrangingCamera);
+      }
+      animateRearranging();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 4. Goal-Directed Shortest Path Animation (A*)
+      const goalScene = new THREE.Scene();
+      goalScene.background = new THREE.Color(0xffffff);
+      const goalCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+      const goalRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const goalContainer = document.getElementById("goal-directed-container");
+      const goalWidth = goalContainer.clientWidth;
+      const goalHeight = goalContainer.clientHeight;
+      
+      goalRenderer.setSize(goalWidth, goalHeight);
+      goalCamera.aspect = goalWidth / goalHeight;
+      goalCamera.updateProjectionMatrix();
+      goalContainer.appendChild(goalRenderer.domElement);
+
+      const goalGroup = new THREE.Group();
+      goalScene.add(goalGroup);
+
+      // Create grid of nodes
+      const gridSize = 6;
+      const goalNodes = [];
+      const goalNodeGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+      const defaultMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+      const startMaterial = new THREE.MeshBasicMaterial({ color: 0x2ecc71 });
+      const endMaterial = new THREE.MeshBasicMaterial({ color: 0xe74c3c });
+      const exploredMaterial = new THREE.MeshBasicMaterial({ color: 0x3498db });
+      const pathMaterial = new THREE.MeshBasicMaterial({ color: 0xf39c12 });
+
+      for (let x = 0; x < gridSize; x++) {
+        goalNodes[x] = [];
+        for (let z = 0; z < gridSize; z++) {
+          const node = new THREE.Mesh(goalNodeGeometry, defaultMaterial.clone());
+          node.position.set((x - gridSize/2) * 1.5, 0, (z - gridSize/2) * 1.5);
+          goalNodes[x][z] = node;
+          goalGroup.add(node);
+        }
+      }
+
+      // Start and end positions
+      const startPos = { x: 0, z: 0 };
+      const endPos = { x: gridSize-1, z: gridSize-1 };
+      goalNodes[startPos.x][startPos.z].material = startMaterial;
+      goalNodes[endPos.x][endPos.z].material = endMaterial;
+
+      goalCamera.position.set(0, 8, 8);
+      goalCamera.lookAt(0, -3, 0);
+
+      let goalTime = 0;
+      let explorationStep = 0;
+
+      function animateGoalDirected() {
+        requestAnimationFrame(animateGoalDirected);
+        goalTime += 0.05;
+
+        // Reset colors periodically
+        if (Math.floor(goalTime) % 6 === 0 && goalTime % 1 < 0.05) {
+          explorationStep = 0;
+          for (let x = 0; x < gridSize; x++) {
+            for (let z = 0; z < gridSize; z++) {
+              if (!(x === startPos.x && z === startPos.z) && !(x === endPos.x && z === endPos.z)) {
+                goalNodes[x][z].material.color.setHex(0xcccccc);
+              }
+            }
+          }
+        }
+
+        // Simulate A* exploration (simplified)
+        const maxSteps = 15;
+        if (explorationStep < maxSteps) {
+          const step = Math.floor(goalTime * 2) % maxSteps;
+          if (step > explorationStep) {
+            explorationStep = step;
+            
+            // Explore nodes in a goal-directed manner
+            for (let x = 0; x < gridSize; x++) {
+              for (let z = 0; z < gridSize; z++) {
+                const distance = Math.abs(x - startPos.x) + Math.abs(z - startPos.z);
+                const heuristic = Math.abs(x - endPos.x) + Math.abs(z - endPos.z);
+                const fScore = distance + heuristic;
+                
+                if (distance <= explorationStep && fScore <= explorationStep + 3) {
+                  if (!(x === startPos.x && z === startPos.z) && !(x === endPos.x && z === endPos.z)) {
+                    goalNodes[x][z].material.color.setHex(0x3498db);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        goalGroup.rotation.y += 0.005;
+        goalRenderer.render(goalScene, goalCamera);
+      }
+      animateGoalDirected();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 5. Contraction Hierarchy Animation
+      const chScene = new THREE.Scene();
+      chScene.background = new THREE.Color(0xffffff);
+      const chCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+      const chRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const chContainer = document.getElementById("contraction-hierarchy-container");
+      const chWidth = chContainer.clientWidth;
+      const chHeight = chContainer.clientHeight;
+      
+      chRenderer.setSize(chWidth, chHeight);
+      chCamera.aspect = chWidth / chHeight;
+      chCamera.updateProjectionMatrix();
+      chContainer.appendChild(chRenderer.domElement);
+
+      const chGroup = new THREE.Group();
+      chScene.add(chGroup);
+
+      // Create hierarchical network
+      const chNodes = [];
+      const chNodeGeometry = new THREE.SphereGeometry(0.3, 8, 8);
+      
+      // Different levels of hierarchy
+      const levels = [
+        { count: 1, radius: 0, color: 0xe74c3c, size: 0.5 },    // Highway interchange
+        { count: 3, radius: 3, color: 0xf39c12, size: 0.4 },   // Major roads
+        { count: 8, radius: 5, color: 0x3498db, size: 0.3 },   // Local roads
+        { count: 12, radius: 7, color: 0x95a5a6, size: 0.2 }   // Residential
+      ];
+
+      levels.forEach((level, levelIndex) => {
+        for (let i = 0; i < level.count; i++) {
+          const angle = (i / level.count) * Math.PI * 2;
+          const node = new THREE.Mesh(
+            new THREE.SphereGeometry(level.size, 8, 8),
+            new THREE.MeshBasicMaterial({ color: level.color })
+          );
+          
+          if (level.radius === 0) {
+            node.position.set(0, 0, 0);
+          } else {
+            node.position.set(
+              Math.cos(angle) * level.radius,
+              0,
+              Math.sin(angle) * level.radius
+            );
+          }
+          
+          node.userData = { level: levelIndex };
+          chNodes.push(node);
+          chGroup.add(node);
+        }
+      });
+
+      // Create connections between levels
+      const connections = [];
+      const connectionMaterial = new THREE.LineBasicMaterial({ color: 0x34495e, opacity: 0.6, transparent: true });
+
+      chCamera.position.set(0, 12, 12);
+      chCamera.lookAt(0, -2.5, 0);
+
+      let chTime = 0;
+
+      function animateContractionHierarchy() {
+        requestAnimationFrame(animateContractionHierarchy);
+        chTime += 0.02;
+
+        // Clear previous connections
+        connections.forEach(conn => chGroup.remove(conn));
+        connections.length = 0;
+
+        // Animate hierarchy usage
+        const phase = Math.sin(chTime * 0.5) * 0.5 + 0.5;
+        
+        chNodes.forEach(node => {
+          const baseIntensity = 0.3 + phase * 0.7;
+          if (node.userData.level === 0) { // Highway
+            node.material.opacity = 0.5 + phase * 0.5;
+          } else {
+            node.material.opacity = baseIntensity * (1 - node.userData.level * 0.2);
+          }
+        });
+
+        // Show connections based on hierarchy
+        if (phase > 0.3) {
+          for (let i = 0; i < chNodes.length - 1; i++) {
+            const node1 = chNodes[i];
+            const node2 = chNodes[i + 1];
+            
+            if (Math.abs(node1.userData.level - node2.userData.level) <= 1) {
+              const geometry = new THREE.BufferGeometry();
+              const vertices = [
+                node1.position.x, node1.position.y, node1.position.z,
+                node2.position.x, node2.position.y, node2.position.z
+              ];
+              geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+              
+              const line = new THREE.Line(geometry, connectionMaterial);
+              connections.push(line);
+              chGroup.add(line);
+            }
+          }
+        }
+
+        chGroup.rotation.y += 0.005;
+        chRenderer.render(chScene, chCamera);
+      }
+      animateContractionHierarchy();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 6. Bounded Hop / Hub Labeling Animation
+      const hubScene = new THREE.Scene();
+      hubScene.background = new THREE.Color(0xffffff);
+      const hubCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+      const hubRenderer = new THREE.WebGLRenderer({ antialias: true });
+      
+      const hubContainer = document.getElementById("bounded-hop-container");
+      const hubWidth = hubContainer.clientWidth;
+      const hubHeight = hubContainer.clientHeight;
+      
+      hubRenderer.setSize(hubWidth, hubHeight);
+      hubCamera.aspect = hubWidth / hubHeight;
+      hubCamera.updateProjectionMatrix();
+      hubContainer.appendChild(hubRenderer.domElement);
+
+      const hubGroup = new THREE.Group();
+      hubScene.add(hubGroup);
+
+      // Create hub nodes and regular nodes
+      const hubNodes = [];
+      const regularNodes = [];
+      const hubGeometry = new THREE.SphereGeometry(0.4, 12, 12);
+      const regularGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+      const hubMaterial = new THREE.MeshBasicMaterial({ color: 0xe74c3c });
+      const regularMaterial = new THREE.MeshBasicMaterial({ color: 0x3498db });
+
+      // Create hub nodes (central important nodes)
+      for (let i = 0; i < 4; i++) {
+        const angle = (i / 4) * Math.PI * 2;
+        const hub = new THREE.Mesh(hubGeometry, hubMaterial.clone());
+        hub.position.set(Math.cos(angle) * 3, 0, Math.sin(angle) * 3);
+        hubNodes.push(hub);
+        hubGroup.add(hub);
+      }
+
+      // Create regular nodes around hubs
+      hubNodes.forEach((hub, hubIndex) => {
+        for (let i = 0; i < 5; i++) {
+          const angle = (i / 5) * Math.PI * 2;
+          const radius = 1.5;
+          const node = new THREE.Mesh(regularGeometry, regularMaterial.clone());
+          node.position.set(
+            hub.position.x + Math.cos(angle) * radius,
+            0,
+            hub.position.z + Math.sin(angle) * radius
+          );
+          node.userData = { hubIndex: hubIndex };
+          regularNodes.push(node);
+          hubGroup.add(node);
+        }
+      });
+
+      const shortcuts = [];
+      const shortcutMaterial = new THREE.LineBasicMaterial({ color: 0xf39c12, linewidth: 3 });
+
+      hubCamera.position.set(0, 10, 10);
+      hubCamera.lookAt(0, 0, 0);
+
+      let hubTime = 0;
+
+      function animateHubLabeling() {
+        requestAnimationFrame(animateHubLabeling);
+        hubTime += 0.02;
+
+        // Clear previous shortcuts
+        shortcuts.forEach(shortcut => hubGroup.remove(shortcut));
+        shortcuts.length = 0;
+
+        // Animate hub connections and shortcuts
+        const phase = Math.sin(hubTime * 0.7) * 0.5 + 0.5;
+
+        // Highlight hubs
+        hubNodes.forEach(hub => {
+          hub.material.opacity = 0.7 + phase * 0.3;
+        });
+
+        // Show precomputed shortcuts between hubs
+        if (phase > 0.4) {
+          for (let i = 0; i < hubNodes.length; i++) {
+            for (let j = i + 1; j < hubNodes.length; j++) {
+              const geometry = new THREE.BufferGeometry();
+              const vertices = [
+                hubNodes[i].position.x, hubNodes[i].position.y, hubNodes[i].position.z,
+                hubNodes[j].position.x, hubNodes[j].position.y, hubNodes[j].position.z
+              ];
+              geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+              
+              const line = new THREE.Line(geometry, shortcutMaterial);
+              shortcuts.push(line);
+              hubGroup.add(line);
+            }
+          }
+        }
+
+        // Animate regular nodes
+        regularNodes.forEach(node => {
+          node.material.opacity = 0.5 + phase * 0.5;
+        });
+
+        hubGroup.rotation.y += 0.005;
+        hubRenderer.render(hubScene, hubCamera);
+      }
+      animateHubLabeling();
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+
+      // 7. Flying Cardboard Boxes Animation
+      const deliveryScene = new THREE.Scene();
+      deliveryScene.background = new THREE.Color(0x667eea);
+      const deliveryCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+      const deliveryRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      
+      const deliveryContainer = document.getElementById("delivery-boxes-container");
+      const deliveryWidth = deliveryContainer.clientWidth;
+      const deliveryHeight = deliveryContainer.clientHeight;
+      
+      deliveryRenderer.setSize(deliveryWidth, deliveryHeight);
+      deliveryCamera.aspect = deliveryWidth / deliveryHeight;
+      deliveryCamera.updateProjectionMatrix();
+      deliveryContainer.appendChild(deliveryRenderer.domElement);
+
+      const deliveryGroup = new THREE.Group();
+      deliveryScene.add(deliveryGroup);
+
+      // Create cardboard box geometry
+      const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const boxMaterial = new THREE.MeshLambertMaterial({ 
+        color: 0xbf9271, // Brown color for cardboard
+        transparent: true,
+        opacity: 0.9
+      });
+
+      // Create multiple flying boxes
+      const flyingBoxes = [];
+      const numBoxes = 64;
+
+      for (let i = 0; i < numBoxes; i++) {
+        const box = new THREE.Mesh(new THREE.BoxGeometry(Math.random() * 2 + 1, Math.random() * 2 + 1, Math.random() * 2 + 1), boxMaterial.clone());
+        
+        // Random starting positions
+        box.position.x = (Math.random() - 0.5) * 40;
+        box.position.y = (Math.random() - 0.5) * 30;
+        box.position.z = (Math.random() - 0.5) * 60;
+        
+        // Random rotation
+        box.rotation.x = Math.random() * Math.PI;
+        box.rotation.y = Math.random() * Math.PI;
+        box.rotation.z = Math.random() * Math.PI;
+        
+        // Store velocity and rotation speed
+        box.userData = {
+          velocity: new THREE.Vector3(
+            (Math.random() - 0.5) * 0.3,
+            (Math.random() - 0.5) * 0.2,
+            (Math.random() - 0.5) * 0.3
+          ),
+          rotationSpeed: new THREE.Vector3(
+            (Math.random() - 0.5) * 0.05,
+            (Math.random() - 0.5) * 0.05,
+            (Math.random() - 0.5) * 0.05
+          ),
+          scale: 0.5 + Math.random() * 0.5 // Random size variation
+        };
+        
+        box.scale.setScalar(box.userData.scale);
+        flyingBoxes.push(box);
+        deliveryGroup.add(box);
+      }
+
+      // Add some ambient lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      deliveryScene.add(ambientLight);
+
+      // Add directional light
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      directionalLight.position.set(10, 10, 5);
+      deliveryScene.add(directionalLight);
+
+      // Position camera
+      deliveryCamera.position.set(0, 5, 15);
+      deliveryCamera.lookAt(0, 0, 0);
+
+      let deliveryTime = 0;
+
+      function animateDeliveryBoxes() {
+        requestAnimationFrame(animateDeliveryBoxes);
+        deliveryTime += 0.016; // ~60fps
+
+        flyingBoxes.forEach((box, index) => {
+          // Update position
+          box.position.add(box.userData.velocity);
+          
+          // Update rotation
+          box.rotation.x += box.userData.rotationSpeed.x;
+          box.rotation.y += box.userData.rotationSpeed.y;
+          box.rotation.z += box.userData.rotationSpeed.z;
+          
+          // Boundary checking - bounce off walls with physics
+          const boundary = 15;
+          const boundaryY = boundary/2;
+          
+          // X boundaries
+          if (box.position.x > boundary) {
+            box.position.x = boundary;
+            box.userData.velocity.x *= -0.8; // Bounce with some energy loss
+          }
+          if (box.position.x < -boundary) {
+            box.position.x = -boundary;
+            box.userData.velocity.x *= -0.8;
+          }
+          
+          // Y boundaries
+          if (box.position.y > boundaryY) {
+            box.position.y = boundaryY;
+            box.userData.velocity.y *= -0.8;
+          }
+          if (box.position.y < -boundaryY) {
+            box.position.y = -boundaryY;
+            box.userData.velocity.y *= -0.8;
+          }
+          
+          // Z boundaries
+          if (box.position.z > boundary) {
+            box.position.z = boundary;
+            box.userData.velocity.z *= -0.8;
+          }
+          if (box.position.z < -boundary) {
+            box.position.z = -boundary;
+            box.userData.velocity.z *= -0.8;
+          }
+          
+          // Add slight random perturbation to prevent boxes from getting stuck
+          if (Math.abs(box.userData.velocity.x) < 0.01) {
+            box.userData.velocity.x += (Math.random() - 0.5) * 0.02;
+          }
+          if (Math.abs(box.userData.velocity.y) < 0.01) {
+            box.userData.velocity.y += (Math.random() - 0.5) * 0.02;
+          }
+          if (Math.abs(box.userData.velocity.z) < 0.01) {
+            box.userData.velocity.z += (Math.random() - 0.5) * 0.02;
+          }
+          
+          // Add some floating motion
+          const floatOffset = Math.sin(deliveryTime * 2 + index) * 0.5;
+          box.position.y += floatOffset * 0.01;
+        });
+
+        // Slowly rotate the entire group
+        deliveryGroup.rotation.y += 0.002;
+        
+        // Camera movement for dynamic effect
+        deliveryCamera.position.x = Math.sin(deliveryTime * 0.1) * 2;
+        deliveryCamera.position.z = 15 + Math.cos(deliveryTime * 0.15) * 3;
+        deliveryCamera.lookAt(0, 0, 0);
+
+        deliveryRenderer.render(deliveryScene, deliveryCamera);
+      }
+      
+      animateDeliveryBoxes();
+
+      // Handle resize for this animation
+      function handleDeliveryResize() {
+        const newWidth = deliveryContainer.clientWidth;
+        const newHeight = deliveryContainer.clientHeight;
+        
+        deliveryRenderer.setSize(newWidth, newHeight);
+        deliveryCamera.aspect = newWidth / newHeight;
+        deliveryCamera.updateProjectionMatrix();
+      }
+      
+      window.addEventListener("resize", handleDeliveryResize);
+    </script>
+
+    <!-- Handle window resize for all animations -->
+    <script>
+      function handleAllResize() {
+        // Clustering
+        const clusteringContainer = document.getElementById("clustering-container");
+        if (clusteringContainer && clusteringContainer.querySelector('canvas')) {
+          const newWidth = clusteringContainer.clientWidth;
+          const newHeight = clusteringContainer.clientHeight;
+          // Update renderer size - this would need access to the renderer objects
+        }
+        // Similar for other animations...
+      }
+      
+      window.addEventListener("resize", handleAllResize);
+    </script>
   </body>
 </html>
