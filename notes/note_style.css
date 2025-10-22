@@ -124,20 +124,15 @@
 
       /* Media query for mobile devices (768px and below) */
       @media screen and (max-width: 768px) {
-        article {
-          display: none !important;
-        }
-        
-        .mobile-message {
-          display: block;
+        body, article p {
+          font-size: 12px !important;
         }
         
         .container {
           margin: 20px auto;
           padding: 20px;
         }
-        
         header h1 {
-          font-size: 24px;
-        }
+          font-size: 20px;
+        } 
       }

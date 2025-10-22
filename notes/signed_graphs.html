@@ -21,22 +21,6 @@
     </script>
   </head>
   <body>
-    <script>
-      // Mobile redirection script
-      function checkMobileAndRedirect() {
-        const mobileThreshold = 768; // pixels
-        if (window.innerWidth < mobileThreshold) {
-          // Redirect to PDF version for mobile devices
-          window.location.href = 'pdf/signed_graphs.pdf';
-        }
-      }
-      
-      // Check on page load
-      checkMobileAndRedirect();
-      
-      // Also check on window resize in case user rotates device
-      window.addEventListener('resize', checkMobileAndRedirect);
-    </script>
     <div class="container">
       <a href="../index.html" class="back-button">Back to Homepage</a>
       
