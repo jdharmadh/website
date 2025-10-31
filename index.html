@@ -12,7 +12,7 @@
 
     html,
     body {
-      background-color: white;
+      background-color: rgb(242, 242, 242);
       font-family:
         "Inter", "Segoe UI", "Helvetica Neue", Arial, "Liberation Sans",
         sans-serif;
@@ -157,11 +157,11 @@
       }
 
       body {
-        font-size: 12px;
+        font-size: 14px;
       }
 
       h2 {
-        font-size: 18px;
+        font-size: 20px;
       }
 
       .ti {
@@ -169,16 +169,16 @@
       }
 
       .subt {
-        font-size: 12px !important;
+        font-size: 14px !important;
       }
 
       .description {
-        font-size: 12px;
+        font-size: 14px;
       }
 
       ol,
       ul {
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .icons a {
@@ -191,12 +191,22 @@
       }
 
       .date {
-        font-size: 12px !important;
+        font-size: 14px !important;
       }
 
       .profile-img {
         max-width: 120px;
         max-height: 120px;
+      }
+
+      /* Mobile work experience layout adjustments */
+      div[style*="display: flex"][style*="justify-content: space-between"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+      }
+
+      .description[style*="padding-right"] {
+        padding-right: 0 !important;
       }
     }
   </style>
