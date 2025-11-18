@@ -232,7 +232,7 @@
       <img class="profile-img" id="profileImage" alt="Profile Image" />
       <script>
         const profileImage = document.getElementById('profileImage');
-        const isGif = Math.random() < 0.5;
+        const isGif = Math.random() < 0.9;
         profileImage.src = `./assets/me.${isGif ? 'gif' : 'png'}`;
         profileImage.className = isGif ? 'profile-img-gif' : 'profile-img';
       </script>
@@ -309,12 +309,12 @@
   <span class="date">2023 - 2025</span>
     </div>
     <div class="description" style="margin-top: 0; color: gray; padding-right: 25%">
-      Courses taught, by most recent:
+      Courses taught:
       <ul style="margin-top: 0px">
-        <li>Design and Analysis of Algorithms (CSE 421)</li>
-        <li>Probability Theory (CSE 312)</li>
-        <li>Discrete Math (CSE 311)</li>
-        <li>Java Programming (CSE 123)</li>
+        <li>3x Design and Analysis of Algorithms (CSE 421)</li>
+        <li>1x Probability Theory (CSE 312)</li>
+        <li>1x Discrete Math (CSE 311)</li>
+        <li>3x Java Programming (CSE 123)</li>
       </ul>
     </div>
   </div>
@@ -350,6 +350,8 @@
       class="subt">December 2024</span></a><br />
 
   <h2>sandbox</h2>
+  <a href="/upskiller" target="_blank"><span class="ti">upskiller</span><span class="subt">Persistent project idea generator</span></a><br />
+
   <a href="/resume-editor" target="_blank"><span class="ti">resume editor</span><span class="subt">Edit a LaTeX template with zero code</span></a><br />
 
   <a href="/tiny" target="_blank"><span class="ti">tiny</span><span class="subt">Lightning-fast tinyURL</span></a><br />
